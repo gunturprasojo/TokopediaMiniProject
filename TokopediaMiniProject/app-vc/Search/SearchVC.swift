@@ -50,6 +50,7 @@ class SearchVC: ViewController {
         super.viewDidLoad()
         self.setupView()
         self.setupViewModel()
+        self.refreshControl.rx.base.sendActions(for: .valueChanged)
     }
     
   
@@ -77,12 +78,14 @@ extension SearchVC {
         
         collectionView.refreshControl = refreshControl
         collectionView.backgroundColor = .white
+        
+       
     }
     
     private func setupViewModel(){
        let input = SearchViewModel.Input(
-                        didLoadTrigger: .just(()),
-                        pullToRefreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver(),
+//                        didLoadTrigger: .just(()),
+                        refreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver(),
                         didLoadNextDataTrigger: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
                         filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
         )
@@ -94,7 +97,12 @@ extension SearchVC {
              collectionView.rx.items(cellIdentifier: ProductListCollectionViewCell.reuseIdentifier, cellType: ProductListCollectionViewCell.self))
              {
              row, model, cell in
-                cell.configureCell(with: model)
+                var tempModel = ProductListCollectionViewCellData(imageURL: model.imageURL,name: model.name , price: model.price)
+                UIImage.streamImage(tempModel.imageURL, completion: {
+                    image, state in
+                    tempModel.img = image ?? UIImage(named: "placeholder")!
+                })
+                cell.configureCell(with: tempModel)
              }.disposed(by: self.disposeBag)
         
         output.errorData.drive(onNext:
@@ -102,7 +110,5 @@ extension SearchVC {
                .disposed(by: disposeBag)
            
         output.isLoading.drive(refreshControl.rx.isRefreshing).disposed(by: disposeBag)
-        
-        
     }
 }

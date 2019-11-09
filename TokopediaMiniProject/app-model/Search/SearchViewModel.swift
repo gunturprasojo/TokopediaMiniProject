@@ -33,8 +33,8 @@ class SearchViewModel: NSObject {
     var servicePayload = SearchViewModelData()
     
     struct Input {
-        let didLoadTrigger : Driver<Void>
-        let pullToRefreshTrigger : Driver<Void>
+//        let didLoadTrigger : Driver<Void>
+        let refreshTrigger : Driver<Void>
         let didLoadNextDataTrigger : Driver<Void>
         let filterData  : Driver<Void>
     }
@@ -90,11 +90,11 @@ class SearchViewModel: NSObject {
         let isLoading = BehaviorRelay<Bool>(value: false)
         
         let fetchNextDataTrigger = input.filterData.asDriver()
-        let fetchDataTrigger = Driver.merge(input.didLoadTrigger, input.pullToRefreshTrigger)
+//        let fetchDataTrigger = Driver.merge(input.didLoadTrigger, input.pullToRefreshTrigger)
+        let fetchDataTrigger = input.refreshTrigger.asDriver()
         
         let myFilter = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
 
-        
         //============= INITIAL DATA TRIGGER HANDLER
         let loadData = fetchDataTrigger.flatMapLatest{
             [service] _ -> Driver<[Product]> in

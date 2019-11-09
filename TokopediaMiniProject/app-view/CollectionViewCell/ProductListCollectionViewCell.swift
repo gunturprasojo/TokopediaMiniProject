@@ -11,16 +11,19 @@ import RxCocoa
 import RxSwift
 
 struct ProductListCollectionViewCellData {
-    let imageURL: String
+    var imageURL : String
     let name: String
     let price : String
+    var img : UIImage = UIImage(named: "imgPlaceholder")!
+
 }
 
 
 class ProductListCollectionViewCell: UICollectionViewCell {
-     private let profileImageView = UIImageView()
     
-      private let nameLabel: UILabel = {
+    private let productImageVIew = UIImageView(image: UIImage(named: "imgPlaceholder"))
+    
+    private let nameLabel: UILabel = {
           let label = UILabel()
           label.font = .systemFont(ofSize: 15)
           label.textColor = UIColor.black.withAlphaComponent(0.7)
@@ -38,8 +41,9 @@ class ProductListCollectionViewCell: UICollectionViewCell {
         return label
     }()
       
-      static let reuseIdentifier = "ProductListCollectionViewCell"
+    static let reuseIdentifier = "ProductListCollectionViewCell"
 
+    private let animationTransition : UIView.AnimationOptions = .curveEaseIn
       
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -54,7 +58,7 @@ class ProductListCollectionViewCell: UICollectionViewCell {
         self.setupProfileImage()
         self.setupNameLabel()
           
-        contentView.addSubview(profileImageView)
+        contentView.addSubview(productImageVIew)
         contentView.addSubview(nameLabel)
         contentView.addSubview(priceLabel)
           
@@ -62,10 +66,9 @@ class ProductListCollectionViewCell: UICollectionViewCell {
       }
     
     private func setupProfileImage(){
-         profileImageView.translatesAutoresizingMaskIntoConstraints = false
-         profileImageView.backgroundColor = .lightGray
-        profileImageView.image = UIImage(named: "imgPlaceholder")
-         profileImageView.setCornerRadius(cornerRadius: 20)
+         productImageVIew.translatesAutoresizingMaskIntoConstraints = false
+         productImageVIew.backgroundColor = .lightGray
+         productImageVIew.setCornerRadius(cornerRadius: 20)
     }
     
     private func setupNameLabel(){
@@ -74,13 +77,13 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     
     private func setupConstraints(){
         NSLayoutConstraint.activate([
-                profileImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-                profileImageView.heightAnchor.constraint(equalToConstant: contentView.frame.height/3 * 2 ),
-                profileImageView.widthAnchor.constraint(equalToConstant:  contentView.frame.width),
-                profileImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
+                productImageVIew.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                productImageVIew.heightAnchor.constraint(equalToConstant: contentView.frame.height/3 * 2 ),
+                productImageVIew.widthAnchor.constraint(equalToConstant:  contentView.frame.width),
+                productImageVIew.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 0),
                     
-                 nameLabel.topAnchor.constraint(equalTo: profileImageView.bottomAnchor , constant: 10),
-                 nameLabel.leftAnchor.constraint(equalTo: profileImageView.leftAnchor, constant: 10),
+                 nameLabel.topAnchor.constraint(equalTo: productImageVIew.bottomAnchor , constant: 10),
+                 nameLabel.leftAnchor.constraint(equalTo: productImageVIew.leftAnchor, constant: 10),
                  nameLabel.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: 0),
                  nameLabel.heightAnchor.constraint(equalToConstant: 45),
             
@@ -93,26 +96,8 @@ class ProductListCollectionViewCell: UICollectionViewCell {
       
       func configureCell(with data: ProductListCollectionViewCellData) {
         nameLabel.text = data.name
-        self.streamImage(with: data)
+        productImageVIew.image = data.img
         priceLabel.text = data.price
       }
     
-    func streamImage(with data: ProductListCollectionViewCellData){
-        UIImage.streamImage(data.imageURL, completion : {
-            (image, state) in
-            DispatchQueue.main.async{
-                if state {
-                    UIView.transition(with: self.profileImageView, duration: 0.75, options: .transitionCrossDissolve, animations: {
-                           self.profileImageView.image = ImageStreamManager.getImageStream(data.imageURL)
-                       }, completion: nil)
-                }else {
-//                    self.profileImageView.image = image!
-                    UIView.transition(with: self.profileImageView, duration: 0.75, options: .transitionCrossDissolve, animations: {
-                      self.profileImageView.image = image!
-                    }, completion: nil)
-                }
-            }
-           
-        })
-    }
 }
