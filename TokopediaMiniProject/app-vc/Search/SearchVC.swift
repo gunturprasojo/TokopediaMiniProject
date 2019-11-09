@@ -34,9 +34,17 @@ class SearchVC: ViewController {
         let btn = UIButton(frame: .zero)
         btn.setTitle("Filter", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.backgroundColor = UIColor(red: 72/255, green: 179/255, blue: 78/255, alpha: 1)
+        btn.backgroundColor = .commonGreen
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
+    }()
+    
+    lazy private var nextPageIndicator : UIActivityIndicatorView = {
+        [unowned self] in
+        let act = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
+        act.color = .commonGreen
+        act.translatesAutoresizingMaskIntoConstraints = false
+        return act
     }()
     
     let refreshControl = UIRefreshControl()
@@ -61,8 +69,10 @@ class SearchVC: ViewController {
 extension SearchVC {
     private func setupView() {
            title = "Search"
-           view.addSubview(collectionView)
-           view.addSubview(buttonFilter)
+            view.addSubview(collectionView)
+            view.addSubview(buttonFilter)
+            view.addSubview(nextPageIndicator)
+        
            NSLayoutConstraint.activate([
                collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
                collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -74,6 +84,13 @@ extension SearchVC {
                buttonFilter.rightAnchor.constraint(equalTo: view.rightAnchor),
                buttonFilter.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
                buttonFilter.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+               
+               nextPageIndicator.centerXAnchor.constraint(equalTo: buttonFilter.centerXAnchor, constant: -75),
+//               nextPageIndicator.bottomAnchor.constraint(equalTo: buttonFilter.topAnchor,constant: -25),
+            nextPageIndicator.centerYAnchor.constraint(equalTo: buttonFilter.centerYAnchor, constant: 1),
+               nextPageIndicator.heightAnchor.constraint(equalToConstant: 35)
+               
+               
            ])
         
         collectionView.refreshControl = refreshControl
@@ -84,12 +101,12 @@ extension SearchVC {
     
     private func setupViewModel(){
        let input = SearchViewModel.Input(
-//                        didLoadTrigger: .just(()),
                         refreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver(),
                         didLoadNextDataTrigger: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
-                        filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
+                        filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
+                        willDisplayCell: collectionView.rx.willDisplayCell.asDriver()
         )
-           
+        
        let output = self.viewModel.transform(input: input)
            
         output.contactListCellData
@@ -110,5 +127,32 @@ extension SearchVC {
                .disposed(by: disposeBag)
            
         output.isLoading.drive(refreshControl.rx.isRefreshing).disposed(by: disposeBag)
+        
+        output.isShowLoadMore.drive(
+            onNext : {
+                isLoadMore in
+                self.isShowLoadMore(isShow: isLoadMore)
+            }
+        ).disposed(by: disposeBag)
     }
+    
+    private func isShowLoadMore(isShow : Bool){
+        if isShow {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                self.buttonFilter.setTitle("Loading Data", for: .normal)
+                self.buttonFilter.setTitleColor(.commonGreen, for: .normal)
+                self.buttonFilter.backgroundColor = .white
+                 self.nextPageIndicator.startAnimating()
+//            })
+        }else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                self.buttonFilter.setTitle("Filter", for: .normal)
+                self.buttonFilter.setTitleColor(.white, for: .normal)
+                self.buttonFilter.backgroundColor = .commonGreen
+                self.nextPageIndicator.stopAnimating()
+            })
+        }
+        self.buttonFilter.isEnabled = !isShow
+    }
+    
 }

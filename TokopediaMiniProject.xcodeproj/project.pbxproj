@@ -33,6 +33,7 @@
 		B89D7231237482DD0011DA72 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D7230237482DD0011DA72 /* SearchViewModel.swift */; };
 		B89D7233237486C60011DA72 /* MainLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D7232237486C60011DA72 /* MainLoadingView.swift */; };
 		B89D72362374A9A50011DA72 /* UIImageViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D72352374A9A50011DA72 /* UIImageViewExtension.swift */; };
+		B8BA521B2377510000EF9371 /* UIColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8BA521A2377510000EF9371 /* UIColorExtension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -87,6 +88,7 @@
 		B89D7230237482DD0011DA72 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 		B89D7232237486C60011DA72 /* MainLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainLoadingView.swift; sourceTree = "<group>"; };
 		B89D72352374A9A50011DA72 /* UIImageViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageViewExtension.swift; sourceTree = "<group>"; };
+		B8BA521A2377510000EF9371 /* UIColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIColorExtension.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +291,7 @@
 		B89D721023746D660011DA72 /* app-extension */ = {
 			isa = PBXGroup;
 			children = (
+				B8BA5219237750ED00EF9371 /* UIColor */,
 				B8400F6E2376BDB00031419B /* BehaviourRelay */,
 				B8400F6B2376B7640031419B /* UIApplication */,
 				B874EAAF2375C79600B85E9B /* UIImage */,
@@ -385,6 +388,14 @@
 				B89D72352374A9A50011DA72 /* UIImageViewExtension.swift */,
 			);
 			path = UIImageView;
+			sourceTree = "<group>";
+		};
+		B8BA5219237750ED00EF9371 /* UIColor */ = {
+			isa = PBXGroup;
+			children = (
+				B8BA521A2377510000EF9371 /* UIColorExtension.swift */,
+			);
+			path = UIColor;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -570,6 +581,7 @@
 				B874EAB62375CA2900B85E9B /* ImageStreamManager.swift in Sources */,
 				B89D71D923746CB00011DA72 /* SceneDelegate.swift in Sources */,
 				B8400F6D2376B7790031419B /* UIApplicationExtension.swift in Sources */,
+				B8BA521B2377510000EF9371 /* UIColorExtension.swift in Sources */,
 				B89D721223746D9A0011DA72 /* BaseService.swift in Sources */,
 				B89D7233237486C60011DA72 /* MainLoadingView.swift in Sources */,
 				B89D71E123746CB00011DA72 /* TokopediaMiniProject.xcdatamodeld in Sources */,

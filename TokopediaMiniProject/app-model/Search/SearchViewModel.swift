@@ -33,16 +33,17 @@ class SearchViewModel: NSObject {
     var servicePayload = SearchViewModelData()
     
     struct Input {
-//        let didLoadTrigger : Driver<Void>
         let refreshTrigger : Driver<Void>
         let didLoadNextDataTrigger : Driver<Void>
         let filterData  : Driver<Void>
+        let willDisplayCell : Driver<(cell: UICollectionViewCell, at: IndexPath)>
     }
     
     struct Output {
         let contactListCellData : Driver<[ProductListCollectionViewCellData]>
         let errorData : Driver<String>
         let isLoading : Driver<Bool>
+        let isShowLoadMore : Driver<Bool>
         
     }
     
@@ -76,6 +77,7 @@ class SearchViewModel: NSObject {
     }
     
     var isFirstLoad = true
+    
     func fetchUrl() -> String{
         self.initUrl()
         if isFirstLoad {
@@ -88,12 +90,13 @@ class SearchViewModel: NSObject {
     func transform(input: Input) -> Output {
         let errorMessage = PublishSubject<String>()
         let isLoading = BehaviorRelay<Bool>(value: false)
-        
         let fetchNextDataTrigger = input.filterData.asDriver()
-//        let fetchDataTrigger = Driver.merge(input.didLoadTrigger, input.pullToRefreshTrigger)
+        
         let fetchDataTrigger = input.refreshTrigger.asDriver()
+        let willDisplayTrigger = input.willDisplayCell.asDriver()
         
         let myFilter = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
+        
 
         //============= INITIAL DATA TRIGGER HANDLER
         let loadData = fetchDataTrigger.flatMapLatest{
@@ -124,6 +127,7 @@ class SearchViewModel: NSObject {
                onNext : {
                 val in
                 print("something doing")
+                self.servicePayload.currentPageInquiry += 1
                 myFilter.accept(val.map {
                     value in
                     self.isFirstLoad = false
@@ -132,19 +136,19 @@ class SearchViewModel: NSObject {
                 isLoading.accept(false)
                 })
         }
-        
-        
+      
         //============= NEXT DATA TRIGGER HANDLER
-        let loadNextData = fetchNextDataTrigger.flatMapLatest{
-            [service] _ -> Driver<[Product]> in
-            self.servicePayload.currentPageInquiry += 1
+        let loadNextData = willDisplayTrigger.flatMapLatest{
+            [service] (cell,indexPath) -> Driver<[Product]> in
+            if  indexPath.row >= (myFilter.value.count - 4) {
             print("NEXT INQUIRY")
-            print("current inquiry : \(self.servicePayload.currentPageInquiry)")
+            print("current next inquiry : \(self.servicePayload.currentPageInquiry)")
             return service.fetchProducts(url: self.fetchUrl())
                 .do(
                     onNext : {
                   val in
-                    print("something next")
+                   
+                    print("something on next")
                     isLoading.accept(true)
                 },
                 onError: {
@@ -153,7 +157,7 @@ class SearchViewModel: NSObject {
                     isLoading.accept(false)
                     print("error fetch product")
                 }, onCompleted:  {
-                    print("something completed")
+                    print("something next completed")
                 })
                 .asDriver{
                 _ -> Driver<[Product]> in
@@ -162,14 +166,19 @@ class SearchViewModel: NSObject {
            .do(
                onNext : {
                 val in
-                print("something doing")
+                print("something next doing")
+                self.servicePayload.currentPageInquiry += 1
                 myFilter.acceptAppending(val.map{
                     value in
                     return ProductListCollectionViewCellData(imageURL: value.imageUri, name: value.name, price: value.price)
                 })
                 isLoading.accept(false)
             })
+            }else {
+                return Driver.empty()
+            }
         }
+        
         
          //============= INITIAL DATA TRIGGER HANDLER
         let cellLoadData = loadData
@@ -202,12 +211,30 @@ class SearchViewModel: NSObject {
             $0.isEmpty
         }
         
+        let onWillDisplay = willDisplayTrigger.do(
+            onNext:
+            {
+                cell, index in
+            }
+        )
+        
+        let isShowLoadMore = onWillDisplay.map{
+            temp -> Bool in
+            let res = temp.at.row >= (myFilter.value.count - 4)
+            if res {
+//                self.isAbleToLoad = !self.isAbleToLoad
+            }
+            return temp.at.row >= (myFilter.value.count - 4)
+        }
+        
+        
         
         //============= OUTPUT
         return Output(
             contactListCellData: myFilter.asDriver(),
             errorData: errorMessageDriver ,
-            isLoading: isLoading.asDriver()
+            isLoading: isLoading.asDriver(),
+            isShowLoadMore: isShowLoadMore.asDriver()
         )
     }
 }
