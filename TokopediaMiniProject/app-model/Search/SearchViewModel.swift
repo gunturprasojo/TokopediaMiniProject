@@ -20,8 +20,8 @@ struct SearchViewModelData {
     var official : Bool = true
     var fShop : Int = 0
     
-    var currentInquiry : Int = 0
-    var lengthInquiry : Int = 10
+    var currentPageInquiry : Int = 0
+    var lengthPageInquiry : Int = 10
 }
 
 class SearchViewModel: NSObject {
@@ -34,18 +34,16 @@ class SearchViewModel: NSObject {
     
     struct Input {
         let didLoadTrigger : Driver<Void>
-        let didTapCellTrigger : Driver<IndexPath>
-        let fetchInitialData : Driver<Void>
-        let fetchNextData : Driver<Void>
+        let pullToRefreshTrigger : Driver<Void>
+        let didLoadNextDataTrigger : Driver<Void>
         let filterData  : Driver<Void>
     }
     
     struct Output {
         let contactListCellData : Driver<[ProductListCollectionViewCellData]>
         let errorData : Driver<String>
-        let selectedIndex : Driver<(index : IndexPath, model : ProductListCollectionViewCellData)>
         let isLoading : Driver<Bool>
-//        let fetchNextData : Driver<[ProductListCollectionViewCellData]>
+        
     }
     
     var exampleUrl : String = ""
@@ -61,7 +59,7 @@ class SearchViewModel: NSObject {
         self.servicePayload.valMaxPrice = 100000
         self.servicePayload.wholeSale = true
         self.servicePayload.official = true
-        self.servicePayload.currentInquiry = 0
+        self.servicePayload.currentPageInquiry = 0
     }
     
     func paramsGenerator() {
@@ -72,8 +70,8 @@ class SearchViewModel: NSObject {
         self.exampleUrl += "&\(URLSearch.maxPrice)=\(servicePayload.valMaxPrice)"
         self.exampleUrl += "&\(URLSearch.wholeSale)=\(servicePayload.wholeSale)"
         self.exampleUrl += "&\(URLSearch.fshop)=\(servicePayload.fShop)"
-        self.exampleUrl += "&\(URLSearch.currentInquiry)=\(servicePayload.currentInquiry)"
-        self.exampleUrl += "&\(URLSearch.lengthInquiry)=\(servicePayload.lengthInquiry)"
+        self.exampleUrl += "&\(URLSearch.currentInquiry)=\(servicePayload.currentPageInquiry)"
+        self.exampleUrl += "&\(URLSearch.lengthInquiry)=\(servicePayload.lengthPageInquiry)"
         
     }
     
@@ -90,32 +88,72 @@ class SearchViewModel: NSObject {
     func transform(input: Input) -> Output {
         let errorMessage = PublishSubject<String>()
         let isLoading = BehaviorRelay<Bool>(value: false)
-        let myFilter = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
-        let fetchNextDataTrigger = Driver.merge(input.filterData)
-        let fetchDataTrigger = Driver.merge(input.didLoadTrigger , input.fetchInitialData)
-     
-         //=============
-        let observablePayload = PublishSubject<SearchViewModelData>()
         
-        //=============
+        let fetchNextDataTrigger = input.filterData.asDriver()
+        let fetchDataTrigger = Driver.merge(input.didLoadTrigger, input.pullToRefreshTrigger)
+        
+        let myFilter = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
+
+        
+        //============= INITIAL DATA TRIGGER HANDLER
         let loadData = fetchDataTrigger.flatMapLatest{
             [service] _ -> Driver<[Product]> in
-            self.servicePayload.currentInquiry = 0
-            print("current inquiry : \(self.servicePayload.currentInquiry)")
+            self.servicePayload.currentPageInquiry = 0
+            print("INITIAL")
+            print("current inquiry : \(self.servicePayload.currentPageInquiry)")
             return service.fetchProducts(url: self.fetchUrl())
                 .do(
                     onNext : {
-                      _ in
-                       
-                        self.isFirstLoad = false
-                        isLoading.accept(true)
-                      
+                  val in
+                    print("something next")
+                    isLoading.accept(true)
                 },
                 onError: {
                     error in
                     errorMessage.onNext(error.localizedDescription)
                     isLoading.accept(false)
                     print("error fetch product")
+                }, onCompleted:  {
+                    print("something completed")
+                })
+                .asDriver{
+                _ -> Driver<[Product]> in
+                Driver.empty()
+                }
+            .do(
+               onNext : {
+                val in
+                print("something doing")
+                myFilter.accept(val.map {
+                    value in
+                    self.isFirstLoad = false
+                    return ProductListCollectionViewCellData(imageURL: value.imageUri, name: value.name, price: value.price)
+                })
+                isLoading.accept(false)
+                })
+        }
+        
+        
+        //============= NEXT DATA TRIGGER HANDLER
+        let loadNextData = fetchNextDataTrigger.flatMapLatest{
+            [service] _ -> Driver<[Product]> in
+            self.servicePayload.currentPageInquiry += 1
+            print("NEXT INQUIRY")
+            print("current inquiry : \(self.servicePayload.currentPageInquiry)")
+            return service.fetchProducts(url: self.fetchUrl())
+                .do(
+                    onNext : {
+                  val in
+                    print("something next")
+                    isLoading.accept(true)
+                },
+                onError: {
+                    error in
+                    errorMessage.onNext(error.localizedDescription)
+                    isLoading.accept(false)
+                    print("error fetch product")
+                }, onCompleted:  {
+                    print("something completed")
                 })
                 .asDriver{
                 _ -> Driver<[Product]> in
@@ -124,7 +162,8 @@ class SearchViewModel: NSObject {
            .do(
                onNext : {
                 val in
-                myFilter.accept(val.map{
+                print("something doing")
+                myFilter.acceptAppending(val.map{
                     value in
                     return ProductListCollectionViewCellData(imageURL: value.imageUri, name: value.name, price: value.price)
                 })
@@ -132,46 +171,8 @@ class SearchViewModel: NSObject {
             })
         }
         
-        
-        let loadNextData = fetchNextDataTrigger.flatMapLatest{
-            [service] _ -> Driver<[Product]> in
-            self.servicePayload.currentInquiry += 1
-            print("current inquiry : \(self.servicePayload.currentInquiry)")
-            return service.fetchProducts(url: self.fetchUrl())
-                .do(
-                    onNext : {
-                      _ in
-                        self.isFirstLoad = false
-                        isLoading.accept(true)
-                      
-                },
-                onError: {
-                    error in
-                    errorMessage.onNext(error.localizedDescription)
-                    isLoading.accept(false)
-                    print("error fetch product")
-                })
-                .asDriver{
-                _ -> Driver<[Product]> in
-                Driver.empty()
-                }
-           .do(
-               onNext : {
-                val in
-                myFilter.accept(myFilter.value + val.map{
-                   value in
-                   return ProductListCollectionViewCellData(imageURL: value.imageUri, name: value.name, price: value.price)
-               })
-               isLoading.accept(false)
-            })
-        }
-       
-        
-        
-       
-
-        //=============
-        let contactListCellData = loadData
+         //============= INITIAL DATA TRIGGER HANDLER
+        let cellLoadData = loadData
             .map{
                 products -> [ProductListCollectionViewCellData] in
                 return products.map{
@@ -180,46 +181,33 @@ class SearchViewModel: NSObject {
                 }
         }
         
-        _ = loadNextData
-                .map{
+        myFilter.accept(cellLoadData.drive() as? [ProductListCollectionViewCellData] ?? [ProductListCollectionViewCellData]())
+      
+        
+        //============= NEXT DATA TRIGGER HANDLER
+        let cellLoadNextData = loadNextData
+            .map{
                products -> [ProductListCollectionViewCellData] in
                return products.map{
                    product  -> ProductListCollectionViewCellData in
                    ProductListCollectionViewCellData(imageURL: product.imageUri, name: product.name, price: product.price)
-                }
-        }
-    
-        
-       _ = observablePayload.subscribe(
-                 onNext: {
-                 value in
-                    self.isFirstLoad = false
-                    self.servicePayload = value
-                    print(self.servicePayload.currentInquiry)
-                    
             }
-        )
+       }
+        
+        myFilter.acceptAppending(cellLoadNextData.drive() as? [ProductListCollectionViewCellData] ?? [ProductListCollectionViewCellData]())
+        
         
         //=============
         let errorMessageDriver = errorMessage.asDriver(onErrorJustReturn: "").filter{
             $0.isEmpty
         }
         
-        //=============
-        let selectedIndexCell = input
-            .didTapCellTrigger
-            .withLatestFrom(contactListCellData) {
-            (index , contacts) ->
-            (index: IndexPath , model : ProductListCollectionViewCellData) in
-            return (index : index, model: contacts[index.row])
-        }
         
+        //============= OUTPUT
         return Output(
             contactListCellData: myFilter.asDriver(),
             errorData: errorMessageDriver ,
-            selectedIndex: selectedIndexCell,
             isLoading: isLoading.asDriver()
-//            fetchNextData: contactListCellNextData
         )
     }
 }

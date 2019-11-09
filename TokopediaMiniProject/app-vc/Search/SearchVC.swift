@@ -34,7 +34,7 @@ class SearchVC: ViewController {
         let btn = UIButton(frame: .zero)
         btn.setTitle("Filter", for: .normal)
         btn.setTitleColor(.white, for: .normal)
-        btn.backgroundColor = .systemIndigo
+        btn.backgroundColor = UIColor(red: 72/255, green: 179/255, blue: 78/255, alpha: 1)
         btn.translatesAutoresizingMaskIntoConstraints = false
         return btn
     }()
@@ -76,15 +76,15 @@ extension SearchVC {
            ])
         
         collectionView.refreshControl = refreshControl
-           collectionView.backgroundColor = .white
+        collectionView.backgroundColor = .white
     }
     
     private func setupViewModel(){
-       let input = SearchViewModel.Input(didLoadTrigger: .just(()),
-                                             didTapCellTrigger: collectionView.rx.itemSelected.asDriver(),
-                                             fetchInitialData: refreshControl.rx.controlEvent(.allEvents).asDriver(),
-                                             fetchNextData: collectionView.rx.didScroll.asDriver(),
-                                             filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
+       let input = SearchViewModel.Input(
+                        didLoadTrigger: .just(()),
+                        pullToRefreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver(),
+                        didLoadNextDataTrigger: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
+                        filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
         )
            
        let output = self.viewModel.transform(input: input)
@@ -97,19 +97,12 @@ extension SearchVC {
                 cell.configureCell(with: model)
              }.disposed(by: self.disposeBag)
         
-
-       output.errorData.drive(onNext:
+        output.errorData.drive(onNext:
                { errorMessage in print("") })
                .disposed(by: disposeBag)
            
-           
-       output.selectedIndex.drive(onNext: {
-               (index, model) in
-               print(model.name)
-               }).disposed(by: disposeBag)
-           
-        
         output.isLoading.drive(refreshControl.rx.isRefreshing).disposed(by: disposeBag)
+        
         
     }
 }
