@@ -8,6 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		194EE6AC5B03C92CB95BC161 /* Pods_TokopediaMiniProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */; };
+		B8400F6D2376B7790031419B /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8400F6C2376B7790031419B /* UIApplicationExtension.swift */; };
+		B8400F702376BDC70031419B /* BehaviourRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8400F6F2376BDC70031419B /* BehaviourRelay.swift */; };
+		B86F31F12374E75800B97E9A /* URLSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86F31F02374E75800B97E9A /* URLSearch.swift */; };
+		B874EAB12375C7AD00B85E9B /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B874EAB02375C7AD00B85E9B /* UIImageExtension.swift */; };
+		B874EAB42375C7EB00B85E9B /* APIConfiguration.plist in Resources */ = {isa = PBXBuildFile; fileRef = B874EAB32375C7EB00B85E9B /* APIConfiguration.plist */; };
+		B874EAB62375CA2900B85E9B /* ImageStreamManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B874EAB52375CA2900B85E9B /* ImageStreamManager.swift */; };
 		B89D71D723746CB00011DA72 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D71D623746CB00011DA72 /* AppDelegate.swift */; };
 		B89D71D923746CB00011DA72 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D71D823746CB00011DA72 /* SceneDelegate.swift */; };
 		B89D71DB23746CB00011DA72 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D71DA23746CB00011DA72 /* ViewController.swift */; };
@@ -18,9 +24,7 @@
 		B89D71FC23746CB20011DA72 /* TokopediaMiniProjectUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D71FB23746CB20011DA72 /* TokopediaMiniProjectUITests.swift */; };
 		B89D721223746D9A0011DA72 /* BaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D721123746D9A0011DA72 /* BaseService.swift */; };
 		B89D721923746F3E0011DA72 /* BaseURLSvc.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D721823746F3E0011DA72 /* BaseURLSvc.swift */; };
-		B89D721B23746FAB0011DA72 /* FeatureSearchSvc.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D721A23746FAB0011DA72 /* FeatureSearchSvc.swift */; };
 		B89D721E23746FF70011DA72 /* VersionSvc.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D721D23746FF70011DA72 /* VersionSvc.swift */; };
-		B89D7220237470EC0011DA72 /* LocalImageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D721F237470EC0011DA72 /* LocalImageManager.swift */; };
 		B89D7222237471150011DA72 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D7221237471150011DA72 /* Product.swift */; };
 		B89D7224237475AA0011DA72 /* ProductService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D7223237475AA0011DA72 /* ProductService.swift */; };
 		B89D722923747C460011DA72 /* ProductListCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B89D722823747C460011DA72 /* ProductListCollectionViewCell.swift */; };
@@ -52,6 +56,12 @@
 		1BE3DB9C253256B9368F737D /* Pods-TokopediaMiniProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProject.release.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject.release.xcconfig"; sourceTree = "<group>"; };
 		1E93BD719248425146E3D491 /* Pods-TokopediaMiniProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProject.debug.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject.debug.xcconfig"; sourceTree = "<group>"; };
 		476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokopediaMiniProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B8400F6C2376B7790031419B /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
+		B8400F6F2376BDC70031419B /* BehaviourRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviourRelay.swift; sourceTree = "<group>"; };
+		B86F31F02374E75800B97E9A /* URLSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSearch.swift; sourceTree = "<group>"; };
+		B874EAB02375C7AD00B85E9B /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
+		B874EAB32375C7EB00B85E9B /* APIConfiguration.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = APIConfiguration.plist; sourceTree = "<group>"; };
+		B874EAB52375CA2900B85E9B /* ImageStreamManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageStreamManager.swift; sourceTree = "<group>"; };
 		B89D71D323746CB00011DA72 /* TokopediaMiniProject.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TokopediaMiniProject.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B89D71D623746CB00011DA72 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B89D71D823746CB00011DA72 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -69,9 +79,7 @@
 		B89D71FD23746CB20011DA72 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B89D721123746D9A0011DA72 /* BaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseService.swift; sourceTree = "<group>"; };
 		B89D721823746F3E0011DA72 /* BaseURLSvc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseURLSvc.swift; sourceTree = "<group>"; };
-		B89D721A23746FAB0011DA72 /* FeatureSearchSvc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureSearchSvc.swift; sourceTree = "<group>"; };
 		B89D721D23746FF70011DA72 /* VersionSvc.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionSvc.swift; sourceTree = "<group>"; };
-		B89D721F237470EC0011DA72 /* LocalImageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalImageManager.swift; sourceTree = "<group>"; };
 		B89D7221237471150011DA72 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
 		B89D7223237475AA0011DA72 /* ProductService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductService.swift; sourceTree = "<group>"; };
 		B89D722823747C460011DA72 /* ProductListCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductListCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -122,6 +130,38 @@
 				476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B8400F6B2376B7640031419B /* UIApplication */ = {
+			isa = PBXGroup;
+			children = (
+				B8400F6C2376B7790031419B /* UIApplicationExtension.swift */,
+			);
+			path = UIApplication;
+			sourceTree = "<group>";
+		};
+		B8400F6E2376BDB00031419B /* BehaviourRelay */ = {
+			isa = PBXGroup;
+			children = (
+				B8400F6F2376BDC70031419B /* BehaviourRelay.swift */,
+			);
+			path = BehaviourRelay;
+			sourceTree = "<group>";
+		};
+		B874EAAF2375C79600B85E9B /* UIImage */ = {
+			isa = PBXGroup;
+			children = (
+				B874EAB02375C7AD00B85E9B /* UIImageExtension.swift */,
+			);
+			path = UIImage;
+			sourceTree = "<group>";
+		};
+		B874EAB22375C7CC00B85E9B /* Plist */ = {
+			isa = PBXGroup;
+			children = (
+				B874EAB32375C7EB00B85E9B /* APIConfiguration.plist */,
+			);
+			path = Plist;
 			sourceTree = "<group>";
 		};
 		B89D71CA23746CB00011DA72 = {
@@ -197,8 +237,8 @@
 			isa = PBXGroup;
 			children = (
 				B89D721123746D9A0011DA72 /* BaseService.swift */,
-				B89D721F237470EC0011DA72 /* LocalImageManager.swift */,
 				B89D7223237475AA0011DA72 /* ProductService.swift */,
+				B874EAB52375CA2900B85E9B /* ImageStreamManager.swift */,
 			);
 			path = "app-services";
 			sourceTree = "<group>";
@@ -249,6 +289,9 @@
 		B89D721023746D660011DA72 /* app-extension */ = {
 			isa = PBXGroup;
 			children = (
+				B8400F6E2376BDB00031419B /* BehaviourRelay */,
+				B8400F6B2376B7640031419B /* UIApplication */,
+				B874EAAF2375C79600B85E9B /* UIImage */,
 				B89D72342374A98E0011DA72 /* UIImageView */,
 			);
 			path = "app-extension";
@@ -257,6 +300,7 @@
 		B89D721523746F180011DA72 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				B874EAB22375C7CC00B85E9B /* Plist */,
 				B89D721C23746FDF0011DA72 /* Version */,
 				B89D721723746F2D0011DA72 /* Feature */,
 				B89D721623746F210011DA72 /* BaseUrl */,
@@ -275,7 +319,7 @@
 		B89D721723746F2D0011DA72 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				B89D721A23746FAB0011DA72 /* FeatureSearchSvc.swift */,
+				B86F31F02374E75800B97E9A /* URLSearch.swift */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -451,6 +495,7 @@
 			files = (
 				B89D722A237481A60011DA72 /* Main.storyboard in Resources */,
 				B89D71E623746CB10011DA72 /* LaunchScreen.storyboard in Resources */,
+				B874EAB42375C7EB00B85E9B /* APIConfiguration.plist in Resources */,
 				B89D71E323746CB10011DA72 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -518,14 +563,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B89D7220237470EC0011DA72 /* LocalImageManager.swift in Sources */,
 				B89D71DB23746CB00011DA72 /* ViewController.swift in Sources */,
+				B874EAB12375C7AD00B85E9B /* UIImageExtension.swift in Sources */,
 				B89D721923746F3E0011DA72 /* BaseURLSvc.swift in Sources */,
 				B89D71D723746CB00011DA72 /* AppDelegate.swift in Sources */,
+				B874EAB62375CA2900B85E9B /* ImageStreamManager.swift in Sources */,
 				B89D71D923746CB00011DA72 /* SceneDelegate.swift in Sources */,
+				B8400F6D2376B7790031419B /* UIApplicationExtension.swift in Sources */,
 				B89D721223746D9A0011DA72 /* BaseService.swift in Sources */,
 				B89D7233237486C60011DA72 /* MainLoadingView.swift in Sources */,
 				B89D71E123746CB00011DA72 /* TokopediaMiniProject.xcdatamodeld in Sources */,
+				B8400F702376BDC70031419B /* BehaviourRelay.swift in Sources */,
+				B86F31F12374E75800B97E9A /* URLSearch.swift in Sources */,
 				B89D7222237471150011DA72 /* Product.swift in Sources */,
 				B89D7231237482DD0011DA72 /* SearchViewModel.swift in Sources */,
 				B89D7224237475AA0011DA72 /* ProductService.swift in Sources */,
@@ -533,7 +582,6 @@
 				B89D722E237482370011DA72 /* SearchVC.swift in Sources */,
 				B89D722923747C460011DA72 /* ProductListCollectionViewCell.swift in Sources */,
 				B89D72362374A9A50011DA72 /* UIImageViewExtension.swift in Sources */,
-				B89D721B23746FAB0011DA72 /* FeatureSearchSvc.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

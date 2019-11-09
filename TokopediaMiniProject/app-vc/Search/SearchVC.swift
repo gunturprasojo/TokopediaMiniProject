@@ -29,6 +29,16 @@ class SearchVC: ViewController {
         return cv
     }()
     
+    lazy private var buttonFilter: UIButton = {
+        [unowned self] in
+        let btn = UIButton(frame: .zero)
+        btn.setTitle("Filter", for: .normal)
+        btn.setTitleColor(.white, for: .normal)
+        btn.backgroundColor = .systemIndigo
+        btn.translatesAutoresizingMaskIntoConstraints = false
+        return btn
+    }()
+    
     let refreshControl = UIRefreshControl()
     
     //Model
@@ -41,6 +51,8 @@ class SearchVC: ViewController {
         self.setupView()
         self.setupViewModel()
     }
+    
+  
 }
 
 
@@ -49,40 +61,55 @@ extension SearchVC {
     private func setupView() {
            title = "Search"
            view.addSubview(collectionView)
+           view.addSubview(buttonFilter)
            NSLayoutConstraint.activate([
                collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
                collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-               collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+               collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
+                                                      constant: -(self.view.frame.height * 0.1)),
+               
+               buttonFilter.leftAnchor.constraint(equalTo: view.leftAnchor),
+               buttonFilter.rightAnchor.constraint(equalTo: view.rightAnchor),
+               buttonFilter.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+               buttonFilter.bottomAnchor.constraint(equalTo: view.bottomAnchor),
            ])
+        
+        collectionView.refreshControl = refreshControl
            collectionView.backgroundColor = .white
     }
     
     private func setupViewModel(){
-           let input = SearchViewModel.Input(didLoadTrigger: .just(()),
+       let input = SearchViewModel.Input(didLoadTrigger: .just(()),
                                              didTapCellTrigger: collectionView.rx.itemSelected.asDriver(),
-                                             pullToRefreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver())
+                                             fetchInitialData: refreshControl.rx.controlEvent(.allEvents).asDriver(),
+                                             fetchNextData: collectionView.rx.didScroll.asDriver(),
+                                             filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
+        )
            
-           let output = self.viewModel.transform(input: input)
+       let output = self.viewModel.transform(input: input)
            
-           output.contactListCellData
-               .drive(collectionView.rx.items(cellIdentifier: ProductListCollectionViewCell.reuseIdentifier, cellType: ProductListCollectionViewCell.self))
-               {
-               row, model, cell in
-               cell.configureCell(with: model)
-           }.disposed(by: self.disposeBag)
-           
-           output.errorData.drive(onNext:
+        output.contactListCellData
+                .asObservable().bind(to:
+             collectionView.rx.items(cellIdentifier: ProductListCollectionViewCell.reuseIdentifier, cellType: ProductListCollectionViewCell.self))
+             {
+             row, model, cell in
+                cell.configureCell(with: model)
+             }.disposed(by: self.disposeBag)
+        
+
+       output.errorData.drive(onNext:
                { errorMessage in print("") })
                .disposed(by: disposeBag)
            
            
-           output.selectedIndex.drive(onNext: {
+       output.selectedIndex.drive(onNext: {
                (index, model) in
                print(model.name)
                }).disposed(by: disposeBag)
            
-           output.isLoading.drive(refreshControl.rx.isRefreshing).disposed(by: disposeBag)
-       
+        
+        output.isLoading.drive(refreshControl.rx.isRefreshing).disposed(by: disposeBag)
+        
     }
 }

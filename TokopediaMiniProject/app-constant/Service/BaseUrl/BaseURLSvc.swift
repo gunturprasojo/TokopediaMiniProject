@@ -9,5 +9,13 @@
 import UIKit
 
 class BaseURLServ: NSObject {
-    static let base = "https://ace.tokopedia.com/"
+    static func baseUrl() -> String {
+        if let path = Bundle.main.path(forResource: "APIConfiguration", ofType: "plist") {
+                   let dictRoot = NSDictionary(contentsOfFile: path)
+                   if let dict = dictRoot {
+                       return dict["baseUrl"] as! String
+                   }
+        }
+        return ""
+    }
 }

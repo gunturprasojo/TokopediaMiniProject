@@ -18,7 +18,7 @@ struct ProductListCollectionViewCellData {
 
 
 class ProductListCollectionViewCell: UICollectionViewCell {
-    private let profileImageView = UIImageView()
+     private let profileImageView = UIImageView()
     
       private let nameLabel: UILabel = {
           let label = UILabel()
@@ -26,17 +26,15 @@ class ProductListCollectionViewCell: UICollectionViewCell {
           label.textColor = UIColor.black.withAlphaComponent(0.7)
           label.numberOfLines = 1
           label.translatesAutoresizingMaskIntoConstraints = false
-          
           return label
       }()
     
     private let priceLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 15)
+        label.font = .boldSystemFont(ofSize: 15)
         label.textColor = UIColor.orange.withAlphaComponent(0.7)
         label.numberOfLines = 1
         label.translatesAutoresizingMaskIntoConstraints = false
-        
         return label
     }()
       
@@ -66,6 +64,7 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     private func setupProfileImage(){
          profileImageView.translatesAutoresizingMaskIntoConstraints = false
          profileImageView.backgroundColor = .lightGray
+        profileImageView.image = UIImage(named: "imgPlaceholder")
          profileImageView.setCornerRadius(cornerRadius: 20)
     }
     
@@ -93,12 +92,27 @@ class ProductListCollectionViewCell: UICollectionViewCell {
     }
       
       func configureCell(with data: ProductListCollectionViewCellData) {
-          nameLabel.text = data.name
-            do {
-                profileImageView.image = try UIImage(data: Data(contentsOf: URL(string: data.imageURL)!))
-            }catch{
-                print("error retrieving data")
-            }
+        nameLabel.text = data.name
+        self.streamImage(with: data)
         priceLabel.text = data.price
       }
+    
+    func streamImage(with data: ProductListCollectionViewCellData){
+        UIImage.streamImage(data.imageURL, completion : {
+            (image, state) in
+            DispatchQueue.main.async{
+                if state {
+                    UIView.transition(with: self.profileImageView, duration: 0.75, options: .transitionCrossDissolve, animations: {
+                           self.profileImageView.image = ImageStreamManager.getImageStream(data.imageURL)
+                       }, completion: nil)
+                }else {
+//                    self.profileImageView.image = image!
+                    UIView.transition(with: self.profileImageView, duration: 0.75, options: .transitionCrossDissolve, animations: {
+                      self.profileImageView.image = image!
+                    }, completion: nil)
+                }
+            }
+           
+        })
+    }
 }
