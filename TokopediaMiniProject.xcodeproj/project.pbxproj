@@ -10,6 +10,8 @@
 		194EE6AC5B03C92CB95BC161 /* Pods_TokopediaMiniProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */; };
 		B81CF93523781E2F004A66BF /* FilterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93423781E2F004A66BF /* FilterVC.swift */; };
 		B81CF93823782B79004A66BF /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93723782B79004A66BF /* FilterViewModel.swift */; };
+		B81CF93D23786D87004A66BF /* FilterShopCriteriaCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93C23786D87004A66BF /* FilterShopCriteriaCell.swift */; };
+		B81CF94123786E8D004A66BF /* FilterShopTypeCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF94023786E8D004A66BF /* FilterShopTypeCell.swift */; };
 		B8400F6D2376B7790031419B /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8400F6C2376B7790031419B /* UIApplicationExtension.swift */; };
 		B8400F702376BDC70031419B /* BehaviourRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8400F6F2376BDC70031419B /* BehaviourRelay.swift */; };
 		B86F31F12374E75800B97E9A /* URLSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86F31F02374E75800B97E9A /* URLSearch.swift */; };
@@ -61,6 +63,8 @@
 		476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokopediaMiniProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B81CF93423781E2F004A66BF /* FilterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterVC.swift; sourceTree = "<group>"; };
 		B81CF93723782B79004A66BF /* FilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewModel.swift; sourceTree = "<group>"; };
+		B81CF93C23786D87004A66BF /* FilterShopCriteriaCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterShopCriteriaCell.swift; sourceTree = "<group>"; };
+		B81CF94023786E8D004A66BF /* FilterShopTypeCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterShopTypeCell.swift; sourceTree = "<group>"; };
 		B8400F6C2376B7790031419B /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
 		B8400F6F2376BDC70031419B /* BehaviourRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviourRelay.swift; sourceTree = "<group>"; };
 		B86F31F02374E75800B97E9A /* URLSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSearch.swift; sourceTree = "<group>"; };
@@ -304,8 +308,8 @@
 			isa = PBXGroup;
 			children = (
 				B89D722723747BDD0011DA72 /* UIView */,
-				B89D722623747BD30011DA72 /* CollectionViewCell */,
-				B89D722523747BCD0011DA72 /* TableViewCell */,
+				B89D722623747BD30011DA72 /* UICollectionViewCell */,
+				B89D722523747BCD0011DA72 /* UITableViewCell */,
 			);
 			path = "app-view";
 			sourceTree = "<group>";
@@ -357,19 +361,21 @@
 			path = Version;
 			sourceTree = "<group>";
 		};
-		B89D722523747BCD0011DA72 /* TableViewCell */ = {
+		B89D722523747BCD0011DA72 /* UITableViewCell */ = {
 			isa = PBXGroup;
 			children = (
+				B81CF93C23786D87004A66BF /* FilterShopCriteriaCell.swift */,
+				B81CF94023786E8D004A66BF /* FilterShopTypeCell.swift */,
 			);
-			path = TableViewCell;
+			path = UITableViewCell;
 			sourceTree = "<group>";
 		};
-		B89D722623747BD30011DA72 /* CollectionViewCell */ = {
+		B89D722623747BD30011DA72 /* UICollectionViewCell */ = {
 			isa = PBXGroup;
 			children = (
 				B89D722823747C460011DA72 /* ProductListCollectionViewCell.swift */,
 			);
-			path = CollectionViewCell;
+			path = UICollectionViewCell;
 			sourceTree = "<group>";
 		};
 		B89D722723747BDD0011DA72 /* UIView */ = {
@@ -611,9 +617,11 @@
 				B8400F702376BDC70031419B /* BehaviourRelay.swift in Sources */,
 				B86F31F12374E75800B97E9A /* URLSearch.swift in Sources */,
 				B89D7222237471150011DA72 /* Product.swift in Sources */,
+				B81CF94123786E8D004A66BF /* FilterShopTypeCell.swift in Sources */,
 				B89D7231237482DD0011DA72 /* SearchViewModel.swift in Sources */,
 				B81CF93523781E2F004A66BF /* FilterVC.swift in Sources */,
 				B89D7224237475AA0011DA72 /* ProductService.swift in Sources */,
+				B81CF93D23786D87004A66BF /* FilterShopCriteriaCell.swift in Sources */,
 				B89D721E23746FF70011DA72 /* VersionSvc.swift in Sources */,
 				B89D722E237482370011DA72 /* SearchVC.swift in Sources */,
 				B89D722923747C460011DA72 /* ProductListCollectionViewCell.swift in Sources */,

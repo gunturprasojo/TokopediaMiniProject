@@ -29,6 +29,7 @@ class SearchVC: ViewController {
         return cv
     }()
     
+    
     lazy private var buttonFilter: UIButton = {
         [unowned self] in
         let btn = UIButton(frame: .zero)
@@ -109,9 +110,9 @@ extension SearchVC {
         
        let output = self.viewModel.transform(input: input)
            
-        output.contactListCellData
-                .asObservable().bind(to:
-             collectionView.rx.items(cellIdentifier: ProductListCollectionViewCell.reuseIdentifier, cellType: ProductListCollectionViewCell.self))
+        output.productListCellData.asObservable().bind(
+            to: collectionView.rx.items(cellIdentifier: ProductListCollectionViewCell.reuseIdentifier,
+                                            cellType: ProductListCollectionViewCell.self))
              {
              row, model, cell in
                 var tempModel = ProductListCollectionViewCellData(imageURL: model.imageURL,name: model.name , price: model.price)
@@ -140,7 +141,18 @@ extension SearchVC {
                 
             }
         ).disposed(by: disposeBag)
+        
+        output.loadDataFromFilter.drive(
+            onNext : {
+                value in
+                print("loaded : \(value.valProduct)")
+                self.refreshControl.rx.base.sendActions(for: .valueChanged)
+            }
+        ).disposed(by: disposeBag)
     }
+    
+    
+    
     
     private func isShowLoadMore(isShow : Bool){
         if isShow {
@@ -149,7 +161,7 @@ extension SearchVC {
                 self.buttonFilter.backgroundColor = .white
                  self.nextPageIndicator.startAnimating()
         }else {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3.5, execute: {
                 self.buttonFilter.setTitle("Filter", for: .normal)
                 self.buttonFilter.setTitleColor(.white, for: .normal)
                 self.buttonFilter.backgroundColor = .commonGreen

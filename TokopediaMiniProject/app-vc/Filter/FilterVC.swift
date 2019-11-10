@@ -7,25 +7,22 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
+
 
 class FilterVC: UIViewController {
 
     //Outlet
-    lazy private var collectionView: UICollectionView = {
-        [unowned self] in
-        let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-        let size = CGSize(width:(self.view.frame.width/2-20), height: 250)
-        layout.itemSize = size
-        layout.minimumLineSpacing = 10
-        layout.minimumInteritemSpacing = 10
-        let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.register(ProductListCollectionViewCell.self,
-                    forCellWithReuseIdentifier: ProductListCollectionViewCell.reuseIdentifier)
-        cv.translatesAutoresizingMaskIntoConstraints = false
-        cv.backgroundColor = .lightGray
-        return cv
-    }()
+     lazy private var tableView: UITableView = {
+          let tv = UITableView(frame: .zero, style: .plain)
+          tv.register(FilterShopCriteriaCell.self, forCellReuseIdentifier: FilterShopCriteriaCell.reuseIdentifier)
+          tv.register(FilterShopTypeCell.self, forCellReuseIdentifier: FilterShopTypeCell.reuseIdentifier)
+          tv.estimatedRowHeight = 150
+          tv.rowHeight = 150
+          tv.translatesAutoresizingMaskIntoConstraints = false
+          return tv
+      }()
     
     let backButton = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(popThisVC))
     
@@ -48,27 +45,41 @@ class FilterVC: UIViewController {
         act.translatesAutoresizingMaskIntoConstraints = false
         return act
     }()
+
+    let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+    let viewModelPayLoad = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     
-    var servicePayload = SearchViewModelData()
-    var callbackPayload : ((SearchViewModelData)->())?
     
+      //Model
+    private let viewModel = FilterViewModel()
+    
+    private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupView()
-        
-        
-        print(servicePayload.currentPageInquiry)
+        self.setupViewModel()
     }
     
+}
+
+extension FilterVC {
     @objc func popThisVC(){
+        
+        var servicePayload = viewModelPayLoad.value
         if servicePayload.valProduct == "apple" {
             servicePayload.valProduct = "samsung"
+             servicePayload.valMaxPrice = 100000000
+            servicePayload.valMinPrice = 1000000
         }else {
             servicePayload.valProduct = "apple"
+            servicePayload.valMaxPrice = 25000
+            servicePayload.valMinPrice = 12500
         }
         
-        self.callbackPayload?(self.servicePayload)
+        servicePayload.currentPageInquiry = 0
+        callbackPayload.accept(servicePayload)
+        
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -78,20 +89,20 @@ class FilterVC: UIViewController {
             self.navigationController?.navigationBar.tintColor = .black
         
         
-            view.addSubview(collectionView)
+            view.addSubview(tableView)
             view.addSubview(buttonFilter)
             view.addSubview(nextPageIndicator)
         
            NSLayoutConstraint.activate([
-               collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
-               collectionView.rightAnchor.constraint(equalTo: view.rightAnchor),
-               collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-               collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
+               tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+               tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+               tableView.topAnchor.constraint(equalTo: view.topAnchor),
+               tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
                                                       constant: -(self.view.frame.height * 0.1)),
                
                buttonFilter.leftAnchor.constraint(equalTo: view.leftAnchor),
                buttonFilter.rightAnchor.constraint(equalTo: view.rightAnchor),
-               buttonFilter.topAnchor.constraint(equalTo: collectionView.bottomAnchor),
+               buttonFilter.topAnchor.constraint(equalTo: tableView.bottomAnchor),
                buttonFilter.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                
                nextPageIndicator.centerXAnchor.constraint(equalTo: buttonFilter.centerXAnchor, constant: -75),
@@ -100,9 +111,30 @@ class FilterVC: UIViewController {
                
                
            ])
-        collectionView.backgroundColor = .darkGray
+        tableView.backgroundColor = .white
     }
     
 
 
+}
+
+extension FilterVC {
+    private func setupViewModel(){
+          let input = FilterViewModel.Input(
+            didSetPayloadTrigger: viewModelPayLoad.asDriver()
+           )
+           
+          let output = self.viewModel.transform(input: input)
+            
+       
+        output.filterShopCriteriaData.drive(
+            tableView.rx.items(cellIdentifier: FilterShopCriteriaCell.reuseIdentifier, cellType: FilterShopCriteriaCell.self)
+            )
+        {
+           row, model, cell in
+            cell.configureCell(with: model)
+        }.disposed(by: disposeBag)
+        
+    }
+       
 }

@@ -8,5 +8,6 @@ target 'TokopediaMiniProject' do
   # Pods for RxExample
   pod 'RxSwift'
   pod 'RxCocoa'
+  pod 'RxDataSources', '~> 4.0.1'
 
 end
