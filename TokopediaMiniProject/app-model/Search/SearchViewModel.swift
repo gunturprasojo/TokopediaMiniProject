@@ -13,29 +13,23 @@ import RxCocoa
 
 
 struct SearchViewModelData {
-    var valProduct : String = ""
-    var valMinPrice : Int = 0
-    var valMaxPrice : Int = 0
+    var valProduct : String = "samsung"
+    var valMinPrice : Int = 10000
+    var valMaxPrice : Int = 100000
     var wholeSale : Bool = true
     var official : Bool = true
     var fShop : Int = 0
-    
     var currentPageInquiry : Int = 0
     var lengthPageInquiry : Int = 10
 }
 
 class SearchViewModel: NSObject {
     
-    let service : ProductServiceProtocol
-    init(service : ProductServiceProtocol = ProductService()) {
-        self.service = service
-    }
-    var servicePayload = SearchViewModelData()
-    
+    //============ Business Process
     struct Input {
         let refreshTrigger : Driver<Void>
         let didLoadNextDataTrigger : Driver<Void>
-        let filterData  : Driver<Void>
+        let navigateToFilter  : Driver<Void>
         let willDisplayCell : Driver<(cell: UICollectionViewCell, at: IndexPath)>
     }
     
@@ -44,23 +38,26 @@ class SearchViewModel: NSObject {
         let errorData : Driver<String>
         let isLoading : Driver<Bool>
         let isShowLoadMore : Driver<Bool>
+        let navigateToFilter : Driver<Void>
         
     }
+    //============ Business Process
     
+    
+    
+    
+    let service : ProductServiceProtocol
+       init(service : ProductServiceProtocol = ProductService()) {
+           self.service = service
+       }
+    var servicePayload = SearchViewModelData()
     var exampleUrl : String = ""
     let disposeBag = DisposeBag()
+    let filterVC = FilterVC()
+    
     
     func initUrl(){
         self.exampleUrl = BaseURLServ.baseUrl() + URLSearch.base + VersionSvc.version()
-    }
-    
-    func initDummyPayload(){
-        self.servicePayload.valProduct = "samsung"
-        self.servicePayload.valMinPrice = 10000
-        self.servicePayload.valMaxPrice = 100000
-        self.servicePayload.wholeSale = true
-        self.servicePayload.official = true
-        self.servicePayload.currentPageInquiry = 0
     }
     
     func paramsGenerator() {
@@ -76,26 +73,35 @@ class SearchViewModel: NSObject {
         
     }
     
-    var isFirstLoad = true
-    
     func fetchUrl() -> String{
         self.initUrl()
-        if isFirstLoad {
-            self.initDummyPayload()
-        }
         self.paramsGenerator()
         return self.exampleUrl
     }
     
+    func setupCallbackFilter(){
+        filterVC.callbackPayload = {
+        result in
+            print("result : \(result.valProduct)")
+            self.servicePayload = result
+            for controller in ((UIApplication.topViewController()?.navigationController)!.viewControllers as Array) {
+                if controller.isKind(of: SearchVC.self) {
+                    (controller as! SearchVC).collectionView.rx.base.scrollToItem(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                    (controller as! SearchVC).refreshControl.rx.base.beginRefreshing()
+                    (controller as! SearchVC).refreshControl.rx.base.sendActions(for: .editingDidBegin)
+                    break
+                }
+            }
+        }
+    }
+    
     func transform(input: Input) -> Output {
         let errorMessage = PublishSubject<String>()
-        let isLoading = BehaviorRelay<Bool>(value: false)
-        let fetchNextDataTrigger = input.filterData.asDriver()
-        
+        let isLoadingRelay = BehaviorRelay<Bool>(value: false)
+        let filterDataTrigger = input.navigateToFilter.asDriver()
         let fetchDataTrigger = input.refreshTrigger.asDriver()
         let willDisplayTrigger = input.willDisplayCell.asDriver()
-        
-        let myFilter = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
+        let cellDataRelay = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
         
 
         //============= INITIAL DATA TRIGGER HANDLER
@@ -109,12 +115,12 @@ class SearchViewModel: NSObject {
                     onNext : {
                   val in
                     print("something next")
-                    isLoading.accept(true)
+                    isLoadingRelay.accept(true)
                 },
                 onError: {
                     error in
                     errorMessage.onNext(error.localizedDescription)
-                    isLoading.accept(false)
+                    isLoadingRelay.accept(false)
                     print("error fetch product")
                 }, onCompleted:  {
                     print("something completed")
@@ -128,19 +134,18 @@ class SearchViewModel: NSObject {
                 val in
                 print("something doing")
                 self.servicePayload.currentPageInquiry += 1
-                myFilter.accept(val.map {
+                cellDataRelay.accept(val.map {
                     value in
-                    self.isFirstLoad = false
                     return ProductListCollectionViewCellData(imageURL: value.imageUri, name: value.name, price: value.price)
                 })
-                isLoading.accept(false)
+                isLoadingRelay.accept(false)
                 })
         }
       
         //============= NEXT DATA TRIGGER HANDLER
         let loadNextData = willDisplayTrigger.flatMapLatest{
             [service] (cell,indexPath) -> Driver<[Product]> in
-            if  indexPath.row >= (myFilter.value.count - 4) {
+            if  indexPath.row >= (cellDataRelay.value.count - 4) {
             print("NEXT INQUIRY")
             print("current next inquiry : \(self.servicePayload.currentPageInquiry)")
             return service.fetchProducts(url: self.fetchUrl())
@@ -149,12 +154,12 @@ class SearchViewModel: NSObject {
                   val in
                    
                     print("something on next")
-                    isLoading.accept(true)
+                    isLoadingRelay.accept(true)
                 },
                 onError: {
                     error in
                     errorMessage.onNext(error.localizedDescription)
-                    isLoading.accept(false)
+                    isLoadingRelay.accept(false)
                     print("error fetch product")
                 }, onCompleted:  {
                     print("something next completed")
@@ -168,17 +173,16 @@ class SearchViewModel: NSObject {
                 val in
                 print("something next doing")
                 self.servicePayload.currentPageInquiry += 1
-                myFilter.acceptAppending(val.map{
+                cellDataRelay.acceptAppending(val.map{
                     value in
                     return ProductListCollectionViewCellData(imageURL: value.imageUri, name: value.name, price: value.price)
                 })
-                isLoading.accept(false)
+                isLoadingRelay.accept(false)
             })
             }else {
                 return Driver.empty()
             }
         }
-        
         
          //============= INITIAL DATA TRIGGER HANDLER
         let cellLoadData = loadData
@@ -190,8 +194,7 @@ class SearchViewModel: NSObject {
                 }
         }
         
-        myFilter.accept(cellLoadData.drive() as? [ProductListCollectionViewCellData] ?? [ProductListCollectionViewCellData]())
-      
+        cellDataRelay.accept(cellLoadData.drive() as? [ProductListCollectionViewCellData] ?? [ProductListCollectionViewCellData]())
         
         //============= NEXT DATA TRIGGER HANDLER
         let cellLoadNextData = loadNextData
@@ -203,8 +206,7 @@ class SearchViewModel: NSObject {
             }
        }
         
-        myFilter.acceptAppending(cellLoadNextData.drive() as? [ProductListCollectionViewCellData] ?? [ProductListCollectionViewCellData]())
-        
+        cellDataRelay.acceptAppending(cellLoadNextData.drive() as? [ProductListCollectionViewCellData] ?? [ProductListCollectionViewCellData]())
         
         //=============
         let errorMessageDriver = errorMessage.asDriver(onErrorJustReturn: "").filter{
@@ -220,21 +222,32 @@ class SearchViewModel: NSObject {
         
         let isShowLoadMore = onWillDisplay.map{
             temp -> Bool in
-            let res = temp.at.row >= (myFilter.value.count - 4)
+            let res = temp.at.row >= (cellDataRelay.value.count - 4)
             if res {
-//                self.isAbleToLoad = !self.isAbleToLoad
             }
-            return temp.at.row >= (myFilter.value.count - 4)
+            return temp.at.row >= (cellDataRelay.value.count - 4)
         }
         
-        
+        let navigateToFilter = filterDataTrigger.do(
+            onNext: {
+                self.navigateToFilter()
+            }
+        ).asDriver()
         
         //============= OUTPUT
         return Output(
-            contactListCellData: myFilter.asDriver(),
+            contactListCellData: cellDataRelay.asDriver(),
             errorData: errorMessageDriver ,
-            isLoading: isLoading.asDriver(),
-            isShowLoadMore: isShowLoadMore.asDriver()
+            isLoading: isLoadingRelay.asDriver(),
+            isShowLoadMore: isShowLoadMore.asDriver(),
+            navigateToFilter: navigateToFilter
         )
     }
+    
+    
+    private func navigateToFilter(){
+        filterVC.servicePayload = self.servicePayload
+        UIApplication.topViewController()?.navigationController?.pushViewController(filterVC, animated: true)
+    }
 }
+

@@ -13,7 +13,7 @@ import RxCocoa
 class SearchVC: ViewController {
     
     //Outlet
-    lazy private var collectionView: UICollectionView = {
+    lazy var collectionView: UICollectionView = {
         [unowned self] in
         let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
@@ -33,6 +33,7 @@ class SearchVC: ViewController {
         [unowned self] in
         let btn = UIButton(frame: .zero)
         btn.setTitle("Filter", for: .normal)
+        btn.titleLabel?.font =  .systemFont(ofSize: 17, weight: .heavy)
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .commonGreen
         btn.translatesAutoresizingMaskIntoConstraints = false
@@ -46,6 +47,8 @@ class SearchVC: ViewController {
         act.translatesAutoresizingMaskIntoConstraints = false
         return act
     }()
+    
+    
     
     let refreshControl = UIRefreshControl()
     
@@ -86,8 +89,7 @@ extension SearchVC {
                buttonFilter.bottomAnchor.constraint(equalTo: view.bottomAnchor),
                
                nextPageIndicator.centerXAnchor.constraint(equalTo: buttonFilter.centerXAnchor, constant: -75),
-//               nextPageIndicator.bottomAnchor.constraint(equalTo: buttonFilter.topAnchor,constant: -25),
-            nextPageIndicator.centerYAnchor.constraint(equalTo: buttonFilter.centerYAnchor, constant: 1),
+               nextPageIndicator.centerYAnchor.constraint(equalTo: buttonFilter.centerYAnchor, constant: 1),
                nextPageIndicator.heightAnchor.constraint(equalToConstant: 35)
                
                
@@ -95,15 +97,13 @@ extension SearchVC {
         
         collectionView.refreshControl = refreshControl
         collectionView.backgroundColor = .white
-        
-       
     }
     
     private func setupViewModel(){
        let input = SearchViewModel.Input(
                         refreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver(),
                         didLoadNextDataTrigger: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
-                        filterData: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
+                        navigateToFilter: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
                         willDisplayCell: collectionView.rx.willDisplayCell.asDriver()
         )
         
@@ -134,16 +134,20 @@ extension SearchVC {
                 self.isShowLoadMore(isShow: isLoadMore)
             }
         ).disposed(by: disposeBag)
+        
+        output.navigateToFilter.drive(
+            onNext: {
+                
+            }
+        ).disposed(by: disposeBag)
     }
     
     private func isShowLoadMore(isShow : Bool){
         if isShow {
-//            DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                 self.buttonFilter.setTitle("Loading Data", for: .normal)
                 self.buttonFilter.setTitleColor(.commonGreen, for: .normal)
                 self.buttonFilter.backgroundColor = .white
                  self.nextPageIndicator.startAnimating()
-//            })
         }else {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                 self.buttonFilter.setTitle("Filter", for: .normal)
@@ -153,6 +157,10 @@ extension SearchVC {
             })
         }
         self.buttonFilter.isEnabled = !isShow
+    }
+    
+    func test(){
+        print("test")
     }
     
 }

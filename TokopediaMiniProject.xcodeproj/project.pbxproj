@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		194EE6AC5B03C92CB95BC161 /* Pods_TokopediaMiniProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */; };
+		B81CF93523781E2F004A66BF /* FilterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93423781E2F004A66BF /* FilterVC.swift */; };
+		B81CF93823782B79004A66BF /* FilterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93723782B79004A66BF /* FilterViewModel.swift */; };
 		B8400F6D2376B7790031419B /* UIApplicationExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8400F6C2376B7790031419B /* UIApplicationExtension.swift */; };
 		B8400F702376BDC70031419B /* BehaviourRelay.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8400F6F2376BDC70031419B /* BehaviourRelay.swift */; };
 		B86F31F12374E75800B97E9A /* URLSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = B86F31F02374E75800B97E9A /* URLSearch.swift */; };
@@ -57,6 +59,8 @@
 		1BE3DB9C253256B9368F737D /* Pods-TokopediaMiniProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProject.release.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject.release.xcconfig"; sourceTree = "<group>"; };
 		1E93BD719248425146E3D491 /* Pods-TokopediaMiniProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProject.debug.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject.debug.xcconfig"; sourceTree = "<group>"; };
 		476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokopediaMiniProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B81CF93423781E2F004A66BF /* FilterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterVC.swift; sourceTree = "<group>"; };
+		B81CF93723782B79004A66BF /* FilterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterViewModel.swift; sourceTree = "<group>"; };
 		B8400F6C2376B7790031419B /* UIApplicationExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIApplicationExtension.swift; sourceTree = "<group>"; };
 		B8400F6F2376BDC70031419B /* BehaviourRelay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BehaviourRelay.swift; sourceTree = "<group>"; };
 		B86F31F02374E75800B97E9A /* URLSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSearch.swift; sourceTree = "<group>"; };
@@ -132,6 +136,22 @@
 				476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B81CF93323781E1A004A66BF /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				B81CF93423781E2F004A66BF /* FilterVC.swift */,
+			);
+			path = Filter;
+			sourceTree = "<group>";
+		};
+		B81CF93623782B60004A66BF /* Filter */ = {
+			isa = PBXGroup;
+			children = (
+				B81CF93723782B79004A66BF /* FilterViewModel.swift */,
+			);
+			path = Filter;
 			sourceTree = "<group>";
 		};
 		B8400F6B2376B7640031419B /* UIApplication */ = {
@@ -248,6 +268,7 @@
 		B89D720B23746CDB0011DA72 /* app-vc */ = {
 			isa = PBXGroup;
 			children = (
+				B81CF93323781E1A004A66BF /* Filter */,
 				B89D722C237482290011DA72 /* Search */,
 				B89D722B237482230011DA72 /* Main */,
 			);
@@ -257,6 +278,7 @@
 		B89D720C23746CE10011DA72 /* app-model */ = {
 			isa = PBXGroup;
 			children = (
+				B81CF93623782B60004A66BF /* Filter */,
 				B89D722F237482C70011DA72 /* Search */,
 			);
 			path = "app-model";
@@ -582,6 +604,7 @@
 				B89D71D923746CB00011DA72 /* SceneDelegate.swift in Sources */,
 				B8400F6D2376B7790031419B /* UIApplicationExtension.swift in Sources */,
 				B8BA521B2377510000EF9371 /* UIColorExtension.swift in Sources */,
+				B81CF93823782B79004A66BF /* FilterViewModel.swift in Sources */,
 				B89D721223746D9A0011DA72 /* BaseService.swift in Sources */,
 				B89D7233237486C60011DA72 /* MainLoadingView.swift in Sources */,
 				B89D71E123746CB00011DA72 /* TokopediaMiniProject.xcdatamodeld in Sources */,
@@ -589,6 +612,7 @@
 				B86F31F12374E75800B97E9A /* URLSearch.swift in Sources */,
 				B89D7222237471150011DA72 /* Product.swift in Sources */,
 				B89D7231237482DD0011DA72 /* SearchViewModel.swift in Sources */,
+				B81CF93523781E2F004A66BF /* FilterVC.swift in Sources */,
 				B89D7224237475AA0011DA72 /* ProductService.swift in Sources */,
 				B89D721E23746FF70011DA72 /* VersionSvc.swift in Sources */,
 				B89D722E237482370011DA72 /* SearchVC.swift in Sources */,
@@ -767,7 +791,8 @@
 			baseConfigurationReference = 1E93BD719248425146E3D491 /* Pods-TokopediaMiniProject.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TokopediaMiniProject/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -776,6 +801,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Orgz.TokopediaMiniProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -786,7 +812,8 @@
 			baseConfigurationReference = 1BE3DB9C253256B9368F737D /* Pods-TokopediaMiniProject.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = TokopediaMiniProject/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -795,6 +822,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Orgz.TokopediaMiniProject;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
