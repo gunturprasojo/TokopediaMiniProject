@@ -41,7 +41,7 @@ class FilterShopTypeCell: UITableViewCell {
             private func setupView() {
                 profileImageView.translatesAutoresizingMaskIntoConstraints = false
                 profileImageView.layer.cornerRadius = 32
-                profileImageView.backgroundColor = .lightGray
+                profileImageView.backgroundColor = .red
                 
                 contentView.addSubview(profileImageView)
                 contentView.addSubview(nameLabel)

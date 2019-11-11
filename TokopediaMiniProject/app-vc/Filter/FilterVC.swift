@@ -9,6 +9,7 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import RxDataSources
 
 
 class FilterVC: UIViewController {
@@ -21,6 +22,7 @@ class FilterVC: UIViewController {
           tv.estimatedRowHeight = 150
           tv.rowHeight = 150
           tv.translatesAutoresizingMaskIntoConstraints = false
+          tv.separatorStyle = .none
           return tv
       }()
     
@@ -45,14 +47,15 @@ class FilterVC: UIViewController {
         act.translatesAutoresizingMaskIntoConstraints = false
         return act
     }()
+    
+    var criteriaCell = FilterShopCriteriaCell()
+    var shopTypeCell = FilterShopTypeCell()
 
     let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     let viewModelPayLoad = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     
-    
       //Model
     private let viewModel = FilterViewModel()
-    
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -60,7 +63,6 @@ class FilterVC: UIViewController {
         self.setupView()
         self.setupViewModel()
     }
-    
 }
 
 extension FilterVC {
@@ -79,7 +81,6 @@ extension FilterVC {
         
         servicePayload.currentPageInquiry = 0
         callbackPayload.accept(servicePayload)
-        
         self.navigationController?.popViewController(animated: true)
     }
     
@@ -114,27 +115,65 @@ extension FilterVC {
         tableView.backgroundColor = .white
     }
     
-
+  
 
 }
 
 extension FilterVC {
     private func setupViewModel(){
-          let input = FilterViewModel.Input(
+        
+        
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, CellModel>>(configureCell: { dataSource, table, indexPath, item in
+          switch item {
+          case .shopCriteria(let shopCriteriaCellData) :
+            return self.makeCellShopCriteria(table:  self.tableView, element:  shopCriteriaCellData, indexPath: indexPath)
+          case .shopType(let shopTypeCellData) :
+            return self.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
+          }
+        })
+        
+        let input = FilterViewModel.Input(
             didSetPayloadTrigger: viewModelPayLoad.asDriver()
            )
            
-          let output = self.viewModel.transform(input: input)
-            
-       
-        output.filterShopCriteriaData.drive(
-            tableView.rx.items(cellIdentifier: FilterShopCriteriaCell.reuseIdentifier, cellType: FilterShopCriteriaCell.self)
-            )
-        {
-           row, model, cell in
-            cell.configureCell(with: model)
-        }.disposed(by: disposeBag)
+        let output = self.viewModel.transform(input: input)
         
+        output.cellData.asObservable().bind(
+            onNext : {
+            value in
+            let section = Observable.just([
+              SectionModel(model: "Shop Criteria", items: [
+                CellModel.shopCriteria(FilterShopCriteriaCellData(maxPrice: value.valMaxPrice, minPrice: value.valMinPrice, isWholeSale: value.wholeSale))
+              ]),
+              SectionModel(model: "Shop Type", items: [
+                CellModel.shopType(FilterShopTypeCellData(goldMerchant: value.fShop, isOfficial: value.official))
+              ])
+            ])
+            self.tableView.rx.base.dataSource = nil
+            section.bind(to: self.tableView.rx.items(dataSource: dataSource)).disposed(by: self.disposeBag)
+                
+            }
+        ).disposed(by: disposeBag)
+        
+    }
+    
+    func makeCellShopCriteria(table : UITableView, element : FilterShopCriteriaCellData, indexPath: IndexPath) -> UITableViewCell{
+        self.criteriaCell = self.tableView.dequeueReusableCell(withIdentifier: FilterShopCriteriaCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaCell
+        self.criteriaCell.configureCell(with: element)
+        self.criteriaCell.selectionStyle = .none
+        return  self.criteriaCell
+    }
+    
+    func makeCellShopType(table : UITableView, element : FilterShopTypeCellData, indexPath: IndexPath) -> UITableViewCell{
+        self.shopTypeCell =  self.tableView.dequeueReusableCell(withIdentifier: FilterShopTypeCell.reuseIdentifier, for: indexPath) as! FilterShopTypeCell
+        self.shopTypeCell.configureCell(with: element)
+        self.shopTypeCell.selectionStyle = .none
+        return  self.shopTypeCell
+    }
+    
+    enum CellModel {
+      case shopCriteria(FilterShopCriteriaCellData)
+      case shopType(FilterShopTypeCellData)
     }
        
 }

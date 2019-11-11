@@ -88,7 +88,7 @@ class SearchViewModel: NSObject {
         let fetchDataTrigger = input.refreshTrigger.asDriver()
         let willDisplayTrigger = input.willDisplayCell.asDriver()
         let cellDataRelay = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
-        
+      
 
         //============= INITIAL DATA TRIGGER HANDLER
         let loadData = fetchDataTrigger.flatMapLatest{
@@ -98,6 +98,7 @@ class SearchViewModel: NSObject {
                 .do(
                     onNext : {
                   val in
+                    print("soemthing on next")
                     isLoadingRelay.accept(true)
                 },
                 onError: {
@@ -115,7 +116,7 @@ class SearchViewModel: NSObject {
             .do(
                onNext : {
                 val in
-                print("something doing")
+                print("something doing on next")
                 self.servicePayload.currentPageInquiry += 1
                 cellDataRelay.accept(val.map {
                     value in
@@ -191,14 +192,8 @@ class SearchViewModel: NSObject {
             $0.isEmpty
         }
         
-        let onWillDisplay = willDisplayTrigger.do(
-            onNext:
-            {
-                cell, index in
-            }
-        )
         
-        let isShowLoadMore = onWillDisplay.map{
+        let isShowLoadMore = willDisplayTrigger.map{
             temp -> Bool in
             let res = temp.at.row >= (cellDataRelay.value.count - 4)
             if res {
@@ -212,20 +207,14 @@ class SearchViewModel: NSObject {
             }
         ).asDriver()
         
-        let filterRelay = BehaviorRelay<Void>(value: Void())
-        
-        let temp = filterVC.callbackPayload.do(
+        let filterPayloadData = filterVC.callbackPayload.do(
             onNext: {
             callbackValue in
                  isLoadingRelay.accept(true)
                 self.servicePayload = callbackValue
                 cellDataRelay.accept([ProductListCollectionViewCellData]())
-                
-                DispatchQueue.main.asyncAfter(deadline: .now() + 5.0, execute: {
-                    filterRelay.accept(Void())
-                })
-           
             }
+            
         ).asDriver(onErrorJustReturn: SearchViewModelData())
       
         
@@ -236,13 +225,12 @@ class SearchViewModel: NSObject {
             isLoading: isLoadingRelay.asDriver(),
             isShowLoadMore: isShowLoadMore.asDriver(),
             navigateToFilter: navigateToFilter,
-            loadDataFromFilter: temp.asDriver()
+            loadDataFromFilter: filterPayloadData
         )
     }
     
     
     private func navigateToFilter(){
-//        filterVC.servicePayload = self.servicePayload
         filterVC.viewModelPayLoad.accept(servicePayload)
         UIApplication.topViewController()?.navigationController?.pushViewController(filterVC, animated: true)
     }

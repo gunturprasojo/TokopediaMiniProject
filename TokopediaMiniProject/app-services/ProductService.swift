@@ -43,15 +43,3 @@ class ProductService: ProductServiceProtocol {
     }
 }
 
-
-struct Contact: Decodable {
-    let id: Int
-    let name: String
-    let phoneNumber: String
-    let email: String
-    let imageUrl: String
-}
-
-struct ContactListResponse: Decodable {
-    let data: [Contact]
-}

@@ -15,7 +15,6 @@ struct ProductListCollectionViewCellData {
     let name: String
     let price : String
     var img : UIImage = UIImage(named: "imgPlaceholder")!
-
 }
 
 

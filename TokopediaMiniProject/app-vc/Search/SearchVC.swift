@@ -108,6 +108,8 @@ extension SearchVC {
                         willDisplayCell: collectionView.rx.willDisplayCell.asDriver()
         )
         
+        
+        
        let output = self.viewModel.transform(input: input)
            
         output.productListCellData.asObservable().bind(
@@ -138,7 +140,7 @@ extension SearchVC {
         
         output.navigateToFilter.drive(
             onNext: {
-                
+
             }
         ).disposed(by: disposeBag)
         

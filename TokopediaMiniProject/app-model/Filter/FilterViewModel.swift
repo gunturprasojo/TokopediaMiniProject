@@ -22,10 +22,7 @@ class FilterViewModel: NSObject {
     }
     
     struct Output {
-//        let filterCellData : Driver<([FilterShopCriteriaCellData],[FilterShopTypeCellData])>
-        let filterShopCriteriaData : Driver<[FilterShopCriteriaCellData]>
-//        let filterCellData2 : Driver<[FilterShopTypeCellData]>
-        
+         let cellData : Driver<SearchViewModelData>
     }
     //============ Business Process
     
@@ -35,24 +32,17 @@ class FilterViewModel: NSObject {
     
     func transform(input: Input) -> Output {
         let payloadModel = input.didSetPayloadTrigger.asDriver()
-       
+        
         let cellDataShopCriteria = payloadModel.flatMapLatest{
-            value -> Driver<[FilterShopCriteriaCellData]> in
-            let relayCriterias = BehaviorRelay<[FilterShopCriteriaCellData]>(value: [FilterShopCriteriaCellData]())
-            let valCriteria = FilterShopCriteriaCellData(maxPrice: value.valMaxPrice,
-                                                         minPrice: value.valMinPrice,
-                                                         isWholeSale: value.wholeSale)
-            relayCriterias.accept([valCriteria])
-            return relayCriterias.asDriver()
-        }
-        .asDriver{
-        _ -> Driver<[FilterShopCriteriaCellData]> in
-            Driver.empty()
+            value -> Driver<SearchViewModelData> in
+            let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+            relayModel.accept(value)
+            return relayModel.asDriver()
         }
         
         
         return Output(
-            filterShopCriteriaData: cellDataShopCriteria.asDriver()
+            cellData: cellDataShopCriteria.asSharedSequence()
         )
     }
     
