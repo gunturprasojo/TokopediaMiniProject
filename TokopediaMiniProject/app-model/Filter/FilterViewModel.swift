@@ -31,18 +31,19 @@ class FilterViewModel: NSObject {
     let disposeBag = DisposeBag()
     
     func transform(input: Input) -> Output {
-        let payloadModel = input.didSetPayloadTrigger.asDriver()
+        let payloadModel = input.didSetPayloadTrigger.asDriver(onErrorJustReturn: SearchViewModelData())
+        let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
         
-        let cellDataShopCriteria = payloadModel.flatMapLatest{
+       _ = payloadModel.flatMapLatest{
             value -> Driver<SearchViewModelData> in
-            let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
-            relayModel.accept(value)
+            var temp = value
+            temp.valMaxPrice = 2500
+            relayModel.accept(temp)
             return relayModel.asDriver()
         }
         
-        
         return Output(
-            cellData: cellDataShopCriteria.asSharedSequence()
+            cellData: relayModel.asDriver()
         )
     }
     

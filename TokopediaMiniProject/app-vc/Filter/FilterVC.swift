@@ -19,8 +19,8 @@ class FilterVC: UIViewController {
           let tv = UITableView(frame: .zero, style: .plain)
           tv.register(FilterShopCriteriaCell.self, forCellReuseIdentifier: FilterShopCriteriaCell.reuseIdentifier)
           tv.register(FilterShopTypeCell.self, forCellReuseIdentifier: FilterShopTypeCell.reuseIdentifier)
-          tv.estimatedRowHeight = 150
-          tv.rowHeight = 150
+          tv.estimatedRowHeight = 170
+          tv.rowHeight = 170
           tv.translatesAutoresizingMaskIntoConstraints = false
           tv.separatorStyle = .none
           return tv
@@ -53,6 +53,9 @@ class FilterVC: UIViewController {
 
     let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     let viewModelPayLoad = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+    let wholeSaleDriver = BehaviorRelay<Bool>(value: false)
+    
+    var servicePayload = SearchViewModelData()
     
       //Model
     private let viewModel = FilterViewModel()
@@ -60,6 +63,7 @@ class FilterVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        servicePayload = viewModelPayLoad.value
         self.setupView()
         self.setupViewModel()
     }
@@ -67,18 +71,6 @@ class FilterVC: UIViewController {
 
 extension FilterVC {
     @objc func popThisVC(){
-        
-        var servicePayload = viewModelPayLoad.value
-        if servicePayload.valProduct == "apple" {
-            servicePayload.valProduct = "samsung"
-             servicePayload.valMaxPrice = 100000000
-            servicePayload.valMinPrice = 1000000
-        }else {
-            servicePayload.valProduct = "apple"
-            servicePayload.valMaxPrice = 25000
-            servicePayload.valMinPrice = 12500
-        }
-        
         servicePayload.currentPageInquiry = 0
         callbackPayload.accept(servicePayload)
         self.navigationController?.popViewController(animated: true)
@@ -115,14 +107,11 @@ extension FilterVC {
         tableView.backgroundColor = .white
     }
     
-  
-
 }
 
 extension FilterVC {
+    
     private func setupViewModel(){
-        
-        
         let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, CellModel>>(configureCell: { dataSource, table, indexPath, item in
           switch item {
           case .shopCriteria(let shopCriteriaCellData) :
@@ -131,6 +120,7 @@ extension FilterVC {
             return self.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
           }
         })
+        
         
         let input = FilterViewModel.Input(
             didSetPayloadTrigger: viewModelPayLoad.asDriver()
@@ -141,6 +131,7 @@ extension FilterVC {
         output.cellData.asObservable().bind(
             onNext : {
             value in
+            self.servicePayload = value
             let section = Observable.just([
               SectionModel(model: "Shop Criteria", items: [
                 CellModel.shopCriteria(FilterShopCriteriaCellData(maxPrice: value.valMaxPrice, minPrice: value.valMinPrice, isWholeSale: value.wholeSale))
@@ -149,6 +140,7 @@ extension FilterVC {
                 CellModel.shopType(FilterShopTypeCellData(goldMerchant: value.fShop, isOfficial: value.official))
               ])
             ])
+                
             self.tableView.rx.base.dataSource = nil
             section.bind(to: self.tableView.rx.items(dataSource: dataSource)).disposed(by: self.disposeBag)
                 
@@ -161,6 +153,20 @@ extension FilterVC {
         self.criteriaCell = self.tableView.dequeueReusableCell(withIdentifier: FilterShopCriteriaCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaCell
         self.criteriaCell.configureCell(with: element)
         self.criteriaCell.selectionStyle = .none
+    
+        let criteriaCellOutput = self.criteriaCell.cellOutput()
+        criteriaCellOutput.wholeSaleControl.asObservable().subscribe(
+            onNext: {
+                value in
+                print("cell action received \(value)")
+                var tempData = SearchViewModelData()
+                tempData = self.viewModelPayLoad.value
+                tempData.wholeSale = value
+                self.servicePayload = tempData
+            }
+        ).disposed(by: disposeBag)
+        
+        
         return  self.criteriaCell
     }
     

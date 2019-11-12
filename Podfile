@@ -9,5 +9,6 @@ target 'TokopediaMiniProject' do
   pod 'RxSwift'
   pod 'RxCocoa'
   pod 'RxDataSources', '~> 4.0.1'
+  pod 'MultiSlider'
 
 end
