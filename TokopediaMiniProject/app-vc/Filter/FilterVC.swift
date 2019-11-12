@@ -66,6 +66,7 @@ class FilterVC: UIViewController {
         servicePayload = viewModelPayLoad.value
         self.setupView()
         self.setupViewModel()
+        self.viewModelPayLoad.accept(servicePayload)
     }
 }
 
@@ -158,7 +159,6 @@ extension FilterVC {
         criteriaCellOutput.wholeSaleControl.asObservable().subscribe(
             onNext: {
                 value in
-                print("cell action received \(value)")
                 var tempData = SearchViewModelData()
                 tempData = self.viewModelPayLoad.value
                 tempData.wholeSale = value
