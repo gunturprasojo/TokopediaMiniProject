@@ -16,13 +16,15 @@ class FilterVC: UIViewController {
 
     //Outlet
      lazy private var tableView: UITableView = {
-          let tv = UITableView(frame: .zero, style: .plain)
+        let tv = UITableView(frame: .zero, style: .plain)
           tv.register(FilterShopCriteriaCell.self, forCellReuseIdentifier: FilterShopCriteriaCell.reuseIdentifier)
           tv.register(FilterShopTypeCell.self, forCellReuseIdentifier: FilterShopTypeCell.reuseIdentifier)
           tv.estimatedRowHeight = 170
           tv.rowHeight = 170
           tv.translatesAutoresizingMaskIntoConstraints = false
           tv.separatorStyle = .none
+          tv.sectionHeaderHeight = 10
+          tv.estimatedSectionHeaderHeight = 10
           return tv
       }()
     
@@ -36,7 +38,6 @@ class FilterVC: UIViewController {
         btn.setTitleColor(.white, for: .normal)
         btn.backgroundColor = .commonGreen
         btn.translatesAutoresizingMaskIntoConstraints = false
-        btn.addTarget(self, action: #selector(popThisVC), for: .touchDown)
         return btn
     }()
     
@@ -58,7 +59,7 @@ class FilterVC: UIViewController {
     var servicePayload = SearchViewModelData()
     
       //Model
-    private let viewModel = FilterViewModel()
+    let viewModel = FilterViewModel()
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -81,7 +82,6 @@ extension FilterVC {
             backButton.tintColor = UIColor.white
             title = "Filter"
             self.navigationController?.navigationBar.tintColor = .black
-        
         
             view.addSubview(tableView)
             view.addSubview(buttonFilter)
@@ -116,15 +116,23 @@ extension FilterVC {
         let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, CellModel>>(configureCell: { dataSource, table, indexPath, item in
           switch item {
           case .shopCriteria(let shopCriteriaCellData) :
-            return self.makeCellShopCriteria(table:  self.tableView, element:  shopCriteriaCellData, indexPath: indexPath)
+            return self.viewModel.makeCellShopCriteria(table:  self.tableView, element:  shopCriteriaCellData, indexPath: indexPath)
           case .shopType(let shopTypeCellData) :
-            return self.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
+            return self.viewModel.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
           }
+            
+         
+            
         })
+
+         dataSource.titleForHeaderInSection = { dataSource, index in
+               return " "
+        }
         
         
         let input = FilterViewModel.Input(
-            didSetPayloadTrigger: viewModelPayLoad.asDriver()
+            didSetPayloadTrigger: viewModelPayLoad.asDriver(),
+            applyFilter: self.buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
            )
            
         let output = self.viewModel.transform(input: input)
@@ -133,6 +141,7 @@ extension FilterVC {
             onNext : {
             value in
             self.servicePayload = value
+                
             let section = Observable.just([
               SectionModel(model: "Shop Criteria", items: [
                 CellModel.shopCriteria(FilterShopCriteriaCellData(maxPrice: value.valMaxPrice, minPrice: value.valMinPrice, isWholeSale: value.wholeSale))
@@ -141,40 +150,12 @@ extension FilterVC {
                 CellModel.shopType(FilterShopTypeCellData(goldMerchant: value.fShop, isOfficial: value.official))
               ])
             ])
-                
             self.tableView.rx.base.dataSource = nil
             section.bind(to: self.tableView.rx.items(dataSource: dataSource)).disposed(by: self.disposeBag)
                 
             }
         ).disposed(by: disposeBag)
         
-    }
-    
-    func makeCellShopCriteria(table : UITableView, element : FilterShopCriteriaCellData, indexPath: IndexPath) -> UITableViewCell{
-        self.criteriaCell = self.tableView.dequeueReusableCell(withIdentifier: FilterShopCriteriaCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaCell
-        self.criteriaCell.configureCell(with: element)
-        self.criteriaCell.selectionStyle = .none
-    
-        let criteriaCellOutput = self.criteriaCell.cellOutput()
-        criteriaCellOutput.wholeSaleControl.asObservable().subscribe(
-            onNext: {
-                value in
-                var tempData = SearchViewModelData()
-                tempData = self.viewModelPayLoad.value
-                tempData.wholeSale = value
-                self.servicePayload = tempData
-            }
-        ).disposed(by: disposeBag)
-        
-        
-        return  self.criteriaCell
-    }
-    
-    func makeCellShopType(table : UITableView, element : FilterShopTypeCellData, indexPath: IndexPath) -> UITableViewCell{
-        self.shopTypeCell =  self.tableView.dequeueReusableCell(withIdentifier: FilterShopTypeCell.reuseIdentifier, for: indexPath) as! FilterShopTypeCell
-        self.shopTypeCell.configureCell(with: element)
-        self.shopTypeCell.selectionStyle = .none
-        return  self.shopTypeCell
     }
     
     enum CellModel {

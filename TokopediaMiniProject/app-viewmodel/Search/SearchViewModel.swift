@@ -207,7 +207,7 @@ class SearchViewModel: NSObject {
             }
         ).asDriver()
         
-        let filterPayloadData = filterVC.callbackPayload.do(
+        let filterPayloadData = filterVC.viewModel.callbackPayload.do(
             onNext: {
             callbackValue in
                  isLoadingRelay.accept(true)
