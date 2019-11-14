@@ -23,7 +23,7 @@ struct SearchViewModelData {
     var lengthPageInquiry : Int = 10
 }
 
-class SearchViewModel: NSObject {
+class SearchVM: NSObject {
     
     //============ Business Process
     struct Input {

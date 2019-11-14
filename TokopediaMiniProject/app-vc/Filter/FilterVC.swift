@@ -16,9 +16,9 @@ class FilterVC: UIViewController {
 
     //Outlet
      lazy private var tableView: UITableView = {
-        let tv = UITableView(frame: .zero, style: .plain)
-          tv.register(FilterShopCriteriaCell.self, forCellReuseIdentifier: FilterShopCriteriaCell.reuseIdentifier)
-          tv.register(FilterShopTypeCell.self, forCellReuseIdentifier: FilterShopTypeCell.reuseIdentifier)
+        let tv = UITableView(frame: .zero, style: .grouped)
+          tv.register(FilterShopCriteriaTVCell.self, forCellReuseIdentifier: FilterShopCriteriaTVCell.reuseIdentifier)
+          tv.register(FilterShopTypeTVCell.self, forCellReuseIdentifier: FilterShopTypeTVCell.reuseIdentifier)
           tv.estimatedRowHeight = 170
           tv.rowHeight = 170
           tv.translatesAutoresizingMaskIntoConstraints = false
@@ -49,8 +49,8 @@ class FilterVC: UIViewController {
         return act
     }()
     
-    var criteriaCell = FilterShopCriteriaCell()
-    var shopTypeCell = FilterShopTypeCell()
+    var criteriaCell = FilterShopCriteriaTVCell()
+    var shopTypeCell = FilterShopTypeTVCell()
 
     let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     let viewModelPayLoad = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
@@ -59,7 +59,7 @@ class FilterVC: UIViewController {
     var servicePayload = SearchViewModelData()
     
       //Model
-    let viewModel = FilterViewModel()
+    let viewModel = FilterVM()
     private let disposeBag = DisposeBag()
     
     override func viewDidLoad() {
@@ -105,7 +105,7 @@ extension FilterVC {
                
                
            ])
-        tableView.backgroundColor = .white
+        tableView.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
     }
     
 }
@@ -124,13 +124,14 @@ extension FilterVC {
          
             
         })
+        
 
-         dataSource.titleForHeaderInSection = { dataSource, index in
-               return " "
-        }
+//         dataSource.titleForHeaderInSection = { dataSource, index in
+//               return " "
+//        }
         
         
-        let input = FilterViewModel.Input(
+        let input = FilterVM.Input(
             didSetPayloadTrigger: viewModelPayLoad.asDriver(),
             applyFilter: self.buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
            )
@@ -147,7 +148,7 @@ extension FilterVC {
                 CellModel.shopCriteria(FilterShopCriteriaCellData(maxPrice: value.valMaxPrice, minPrice: value.valMinPrice, isWholeSale: value.wholeSale))
               ]),
               SectionModel(model: "Shop Type", items: [
-                CellModel.shopType(FilterShopTypeCellData(goldMerchant: value.fShop, isOfficial: value.official))
+                CellModel.shopType(FilterShopTypeCellData(state: .official ,goldMerchant: value.fShop, isOfficial: value.official))
               ])
             ])
             self.tableView.rx.base.dataSource = nil

@@ -18,7 +18,7 @@ struct ProductListCollectionViewCellData {
 }
 
 
-class ProductListCollectionViewCell: UICollectionViewCell {
+class ProductListCVCell: UICollectionViewCell {
     
     private let productImageVIew = UIImageView(image: UIImage(named: "imgPlaceholder"))
     

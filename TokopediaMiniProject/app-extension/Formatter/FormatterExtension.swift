@@ -12,7 +12,7 @@ import Foundation
 extension Formatter {
     static let withSeparator: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.groupingSeparator = FormatterStyle.separatorNumberStyle
+        formatter.groupingSeparator = FormatterStyle.separatorNumberStyle()
         formatter.numberStyle = .decimal
         return formatter
     }()

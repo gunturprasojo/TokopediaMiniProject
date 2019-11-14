@@ -14,7 +14,7 @@ import RxCocoa
 
 
 
-class FilterViewModel: NSObject {
+class FilterVM: NSObject {
     
     //============ Business Process
     struct Input {
@@ -56,10 +56,10 @@ class FilterViewModel: NSObject {
     }
     
     
-    var criteriaCell = FilterShopCriteriaCell()
-    var shopTypeCell = FilterShopTypeCell()
+    var criteriaCell = FilterShopCriteriaTVCell()
+    var shopTypeCell = FilterShopTypeTVCell()
     func makeCellShopCriteria(table : UITableView, element : FilterShopCriteriaCellData, indexPath: IndexPath) -> UITableViewCell{
-        self.criteriaCell = table.dequeueReusableCell(withIdentifier: FilterShopCriteriaCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaCell
+        self.criteriaCell = table.dequeueReusableCell(withIdentifier: FilterShopCriteriaTVCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaTVCell
         self.criteriaCell.configureCell(with: element)
         self.criteriaCell.selectionStyle = .none
     
@@ -88,7 +88,7 @@ class FilterViewModel: NSObject {
     }
     
     func makeCellShopType(table : UITableView, element : FilterShopTypeCellData, indexPath: IndexPath) -> UITableViewCell{
-        self.shopTypeCell =  table.dequeueReusableCell(withIdentifier: FilterShopTypeCell.reuseIdentifier, for: indexPath) as! FilterShopTypeCell
+        self.shopTypeCell =  table.dequeueReusableCell(withIdentifier: FilterShopTypeTVCell.reuseIdentifier, for: indexPath) as! FilterShopTypeTVCell
         self.shopTypeCell.configureCell(with: element)
         self.shopTypeCell.selectionStyle = .none
         return  self.shopTypeCell
@@ -98,7 +98,7 @@ class FilterViewModel: NSObject {
 }
 
 
-extension FilterViewModel {
+extension FilterVM {
     func applyFilter(){
         servicePayload.currentPageInquiry = 0
         callbackPayload.accept(servicePayload)

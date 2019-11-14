@@ -22,8 +22,8 @@ class SearchVC: ViewController {
         layout.minimumLineSpacing = 10
         layout.minimumInteritemSpacing = 10
         let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        cv.register(ProductListCollectionViewCell.self,
-                    forCellWithReuseIdentifier: ProductListCollectionViewCell.reuseIdentifier)
+        cv.register(ProductListCVCell.self,
+                    forCellWithReuseIdentifier: ProductListCVCell.reuseIdentifier)
         cv.translatesAutoresizingMaskIntoConstraints = false
         cv.backgroundColor = .lightGray
         return cv
@@ -54,7 +54,7 @@ class SearchVC: ViewController {
     let refreshControl = UIRefreshControl()
     
     //Model
-    private let viewModel = SearchViewModel()
+    private let viewModel = SearchVM()
     
     private let disposeBag = DisposeBag()
     
@@ -101,7 +101,7 @@ extension SearchVC {
     }
     
     private func setupViewModel(){
-       let input = SearchViewModel.Input(
+       let input = SearchVM.Input(
                         refreshTrigger: refreshControl.rx.controlEvent(.allEvents).asDriver(),
                         didLoadNextDataTrigger: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
                         navigateToFilter: buttonFilter.rx.controlEvent(.touchUpInside).asDriver(),
@@ -113,8 +113,8 @@ extension SearchVC {
        let output = self.viewModel.transform(input: input)
            
         output.productListCellData.asObservable().bind(
-            to: collectionView.rx.items(cellIdentifier: ProductListCollectionViewCell.reuseIdentifier,
-                                            cellType: ProductListCollectionViewCell.self))
+            to: collectionView.rx.items(cellIdentifier: ProductListCVCell.reuseIdentifier,
+                                            cellType: ProductListCVCell.self))
              {
              row, model, cell in
                 var tempModel = ProductListCollectionViewCellData(imageURL: model.imageURL,name: model.name , price: model.price)

@@ -11,10 +11,15 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
+enum FilterShopTypeState{
+    case goldMerchant
+    case official
+}
 
 struct FilterShopTypeCellData {
+    var state : FilterShopTypeState
     var goldMerchant : Int
-    let isOfficial : Bool
+    var isOfficial : Bool
 }
 
 struct SectionFilterShopTypeCellData {
@@ -31,37 +36,45 @@ extension SectionFilterShopTypeCellData : SectionModelType {
 }
 
 
-class FilterShopTypeCell: UITableViewCell {
+class FilterShopTypeTVCell: UITableViewCell {
             
     private let lblTitleShopType: UILabel = {
              let label = UILabel()
-             label.font = .systemFont(ofSize: 18)
-             label.textColor = UIColor.black.withAlphaComponent(0.6)
+             label.font = .systemFont(ofSize: 15)
+             label.textColor = UIColor.black.withAlphaComponent(0.3)
              label.numberOfLines = 1
              label.translatesAutoresizingMaskIntoConstraints = false
              label.text = "Shop Type"
              return label
          }()
     
+    private let btnDetailShopType: UIButton = {
+                let btn = UIButton()
+               btn.setTitle(">", for: .normal)
+               btn.setTitleColor(.lightGray, for: .normal)
+               btn.translatesAutoresizingMaskIntoConstraints = false
+               return btn
+            }()
+    
     lazy var collectionView: UICollectionView = {
            [unowned self] in
-           let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
-           layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
-           let size = CGSize(width:(self.frame.width/2-20), height: 250)
-           layout.itemSize = size
-           layout.minimumLineSpacing = 10
-           layout.minimumInteritemSpacing = 10
+            let layout: UICollectionViewFlowLayout = UICollectionViewFlowLayout()
+            layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
+            let size = CGSize(width:(self.frame.width/2-20), height: 250)
+            layout.itemSize = size
+            layout.minimumLineSpacing = 10
+            layout.minimumInteritemSpacing = 10
             layout.scrollDirection = .horizontal
-           let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
-           cv.register(ShopTypeCollectionViewCell.self,
-                       forCellWithReuseIdentifier: ShopTypeCollectionViewCell.shopTypeReuseIdentifier)
-           cv.translatesAutoresizingMaskIntoConstraints = false
+            let cv = UICollectionView(frame: .zero, collectionViewLayout: layout)
+            cv.register(ShopTypeCVCell.self,
+                       forCellWithReuseIdentifier: ShopTypeCVCell.shopTypeReuseIdentifier)
+            cv.translatesAutoresizingMaskIntoConstraints = false
             cv.backgroundColor = .white
-           return cv
+            return cv
        }()
     
     static let reuseIdentifier = "FilterShopTypeCell"
-    private let viewModel = ShopTypeCellModel()
+    private let viewModel = FilterShopTypeCellVM()
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -75,11 +88,16 @@ class FilterShopTypeCell: UITableViewCell {
     private func setupView() {
         self.addSubview(lblTitleShopType)
         self.addSubview(collectionView)
+        self.addSubview(btnDetailShopType)
         
         NSLayoutConstraint.activate([
            lblTitleShopType.topAnchor.constraint(equalTo: self.topAnchor, constant: 15),
            lblTitleShopType.leadingAnchor.constraint(equalTo: self.leadingAnchor , constant: 15),
            lblTitleShopType.heightAnchor.constraint(equalToConstant: 20),
+           
+           btnDetailShopType.topAnchor.constraint(equalTo: self.topAnchor, constant: 15),
+           btnDetailShopType.trailingAnchor.constraint(equalTo: self.trailingAnchor , constant: -15),
+           btnDetailShopType.heightAnchor.constraint(equalToConstant: 20),
            
            collectionView.leftAnchor.constraint(equalTo: lblTitleShopType.leftAnchor),
            collectionView.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -15),
@@ -91,36 +109,34 @@ class FilterShopTypeCell: UITableViewCell {
     
     func configureCell(with data: FilterShopTypeCellData) {
         print("data : \(data.isOfficial)")
-        self.setupViewModel()
+        self.setupViewModel(data: data)
     }
-    
-    let relayData = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(goldMerchant: 2,isOfficial: true))
-    
-   
     
     let disposeBag = DisposeBag()
     
-   func setupViewModel (){
+    func setupViewModel(data: FilterShopTypeCellData){
     
-    let dataSource = RxCollectionViewSectionedReloadDataSource<SectionFilterShopTypeCellData>(
+        let relayData = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: data.goldMerchant, isOfficial: data.isOfficial))
+      
+        let dataSource = RxCollectionViewSectionedReloadDataSource<SectionFilterShopTypeCellData>(
               configureCell : {
-             dataSource, collView , indexPath, item -> ShopTypeCollectionViewCell in
+             dataSource, collView , indexPath, item -> ShopTypeCVCell in
                 
                 if indexPath.row == 0 {
-                let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCollectionViewCell.shopTypeReuseIdentifier,
-                   for: indexPath) as! ShopTypeCollectionViewCell
+                let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCVCell.shopTypeReuseIdentifier,
+                   for: indexPath) as! ShopTypeCVCell
                     cell.configureCell(with: item)
                    return cell
                 }else {
-                    let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCollectionViewCell.shopTypeReuseIdentifier,
-                    for: indexPath) as! ShopTypeCollectionViewCell
+                    let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCVCell.shopTypeReuseIdentifier,
+                    for: indexPath) as! ShopTypeCVCell
                     cell.configureCell(with: item)
                     return cell
                 }
-              }
+          }
        )
     
-    let input = ShopTypeCellModel.Input(didSetShopTypeCellData:
+    let input = FilterShopTypeCellVM.Input(didSetShopTypeCellData:
            relayData.asDriver()
     )
        

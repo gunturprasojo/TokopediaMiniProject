@@ -18,7 +18,7 @@ struct FilterShopCriteriaCellData {
     let isWholeSale : Bool
 }
 
-class FilterShopCriteriaCell: UITableViewCell {
+class FilterShopCriteriaTVCell: UITableViewCell {
     
     
     private let lblTitleMinimumPrice: UILabel = {
