@@ -84,7 +84,7 @@ class SearchVM: NSObject {
     func transform(input: Input) -> Output {
         let errorMessage = PublishSubject<String>()
         let isLoadingRelay = BehaviorRelay<Bool>(value: false)
-        let filterDataTrigger = input.navigateToFilter.asDriver()
+        let navigateFilterDataTrigger = input.navigateToFilter.asDriver()
         let fetchDataTrigger = input.refreshTrigger.asDriver()
         let willDisplayTrigger = input.willDisplayCell.asDriver()
         let cellDataRelay = BehaviorRelay<[ProductListCollectionViewCellData]>(value: [ProductListCollectionViewCellData]())
@@ -201,7 +201,7 @@ class SearchVM: NSObject {
             return temp.at.row >= (cellDataRelay.value.count - 4)
         }
         
-        let navigateToFilter = filterDataTrigger.do(
+        let navigateToFilter = navigateFilterDataTrigger.do(
             onNext: {
                 self.navigateToFilter()
             }

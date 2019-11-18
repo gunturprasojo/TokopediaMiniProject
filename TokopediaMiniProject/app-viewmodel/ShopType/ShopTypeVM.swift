@@ -1,10 +1,12 @@
 //
-//  FilterViewModel.swift
+//  ShopTypeVM.swift
 //  TokopediaMiniProject
 //
-//  Created by Guntur Budi on 10/11/19.
+//  Created by Guntur Budi on 15/11/19.
 //  Copyright © 2019 Guntur Budi. All rights reserved.
 //
+
+
 
 
 import UIKit
@@ -14,7 +16,7 @@ import RxCocoa
 
 
 
-class FilterVM: NSObject {
+class ShopTypeVM: NSObject {
     
     //============ Business Process
     struct Input {
@@ -101,7 +103,7 @@ class FilterVM: NSObject {
 }
 
 
-extension FilterVM {
+extension ShopTypeVM {
     func applyFilter(){
         servicePayload.currentPageInquiry = 0
         callbackPayload.accept(servicePayload)

@@ -7,14 +7,14 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
+import RxDataSources
 
 class ShopTypeVC: UIViewController {
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-    }
-    
-
+        override func viewDidLoad() {
+            super.viewDidLoad()
+            self.view.backgroundColor = .white
+        }
 }

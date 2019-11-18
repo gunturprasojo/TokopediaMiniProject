@@ -54,19 +54,25 @@ class ShopTypeCVCell: UICollectionViewCell {
     
     static let shopTypeReuseIdentifier = "ShopTypeCollectionViewCell"
     
-   
+
+   let relayButton = BehaviorRelay<Int>(value: 0)
+   @objc func actClear(_ btn : UIButton){
+    print("tag : \(btn.tag)")
+       relayButton.accept(btn.tag)
+   }
     
     override init(frame: CGRect) {
            super.init(frame: frame)
            setupView()
          }
        
-         required init?(coder: NSCoder) {
-             fatalError("init(coder:) has not been implemented")
-         }
+     required init?(coder: NSCoder) {
+         fatalError("init(coder:) has not been implemented")
+     }
     
     private func setupView() {
         self.setupNameLabel()
+        clearButton.addTarget(self, action: #selector(actClear(_:)), for: .touchUpInside)
         contentView.addSubview(containerView)
         containerView.addSubview(nameLabel)
         containerView.addSubview(clearButton)
@@ -98,7 +104,8 @@ class ShopTypeCVCell: UICollectionViewCell {
                   ])
        }
     
-    func configureCell(with data: FilterShopTypeCellData) {
+    func configureCell(tag : Int,data: FilterShopTypeCellData) {
+       clearButton.tag = tag
         switch data.state {
         case .goldMerchant :
             nameLabel.text = "Gold Merchant"

@@ -55,6 +55,7 @@ class FilterVC: UIViewController {
     let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     let viewModelPayLoad = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     let wholeSaleDriver = BehaviorRelay<Bool>(value: false)
+    let nextNavigationDriver = BehaviorRelay<Bool>(value: true)
     
     var servicePayload = SearchViewModelData()
     
@@ -62,8 +63,13 @@ class FilterVC: UIViewController {
     let viewModel = FilterVM()
     private let disposeBag = DisposeBag()
     
+    override func viewDidAppear(_ animated: Bool) {
+    
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("didload")
         servicePayload = viewModelPayLoad.value
         self.setupView()
         self.setupViewModel()
@@ -72,6 +78,7 @@ class FilterVC: UIViewController {
 }
 
 extension FilterVC {
+    
     @objc func popThisVC(){
         servicePayload.currentPageInquiry = 0
         callbackPayload.accept(servicePayload)
@@ -120,16 +127,7 @@ extension FilterVC {
           case .shopType(let shopTypeCellData) :
             return self.viewModel.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
           }
-            
-         
-            
         })
-        
-
-//         dataSource.titleForHeaderInSection = { dataSource, index in
-//               return " "
-//        }
-        
         
         let input = FilterVM.Input(
             didSetPayloadTrigger: viewModelPayLoad.asDriver(),

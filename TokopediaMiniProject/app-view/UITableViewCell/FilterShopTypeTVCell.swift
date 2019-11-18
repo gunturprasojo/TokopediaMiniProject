@@ -75,6 +75,8 @@ class FilterShopTypeTVCell: UITableViewCell {
     
     static let reuseIdentifier = "FilterShopTypeCell"
     private let viewModel = FilterShopTypeCellVM()
+    var isAbleToNavigate = true
+    let relayButtonClear = BehaviorRelay<Int>(value: 0)
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -110,7 +112,9 @@ class FilterShopTypeTVCell: UITableViewCell {
     func configureCell(with data: FilterShopTypeCellData) {
         print("data : \(data.isOfficial)")
         self.setupViewModel(data: data)
+        self.isAbleToNavigate = true
     }
+    
     
     let disposeBag = DisposeBag()
     
@@ -121,32 +125,48 @@ class FilterShopTypeTVCell: UITableViewCell {
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionFilterShopTypeCellData>(
               configureCell : {
              dataSource, collView , indexPath, item -> ShopTypeCVCell in
-                
-                if indexPath.row == 0 {
                 let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCVCell.shopTypeReuseIdentifier,
                    for: indexPath) as! ShopTypeCVCell
-                    cell.configureCell(with: item)
-                   return cell
-                }else {
-                    let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCVCell.shopTypeReuseIdentifier,
-                    for: indexPath) as! ShopTypeCVCell
-                    cell.configureCell(with: item)
-                    return cell
-                }
+                cell.configureCell(tag:indexPath.section,data: item)
+                cell.relayButton.asObservable().do(
+                    onNext: {
+                        value in
+                        print("vaaal : \(value)")
+                    }
+                )
+                return cell
           }
        )
     
-    let input = FilterShopTypeCellVM.Input(didSetShopTypeCellData:
-           relayData.asDriver()
+    let input = FilterShopTypeCellVM.Input(
+        didSetShopTypeCellData: relayData.asDriver(),
+        navigateToShopType: self.btnDetailShopType.rx.controlEvent(.touchDown).asDriver()
     )
        
     let output = self.viewModel.transform(input: input)
         
     self.collectionView.rx.base.dataSource = nil
-    output.shopTypeCellData.asObservable()
-    .bind(to: collectionView.rx.items(dataSource: dataSource))
-    .disposed(by: disposeBag)
+    
+        output.shopTypeCellData.asObservable()
+            .bind(to: collectionView.rx.items(dataSource: dataSource)
+        ).disposed(by: disposeBag)
+        
+        
+        output.navigateToShopType.drive(
+               onNext: {
+                  self.navigateToShopType()
+            }
+        ).disposed(by: disposeBag)
+    
     }
-
-
+    let shopTypeVC = ShopTypeVC()
+    
+    
+    private func navigateToShopType(){
+        if self.isAbleToNavigate {
+            isAbleToNavigate = false
+            UIApplication.topViewController()?.navigationController?.pushViewController(shopTypeVC, animated: true)
+        }
+    }
+    
 }
