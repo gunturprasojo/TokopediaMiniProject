@@ -58,14 +58,8 @@ class FilterShopTypeCellVM: NSObject {
         
         let navigateToShopTypeAction = navigateToShopTypeTrigger.do(
                    onNext: {
-                      print("on next 1")
-                    }
-        ).do(
-            onNext : {
-                 print("on next 2")
-            },afterCompleted: {
-             print("After completed")
-        }
+                    
+                }
         )
         
 

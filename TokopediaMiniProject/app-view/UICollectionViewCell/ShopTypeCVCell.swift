@@ -55,10 +55,11 @@ class ShopTypeCVCell: UICollectionViewCell {
     static let shopTypeReuseIdentifier = "ShopTypeCollectionViewCell"
     
 
-   let relayButton = BehaviorRelay<Int>(value: 0)
+    public var relayButtons : ((Int)->())?
+    
    @objc func actClear(_ btn : UIButton){
-    print("tag : \(btn.tag)")
-       relayButton.accept(btn.tag)
+        print("tag : \(btn.tag)")
+        relayButtons?(btn.tag)
    }
     
     override init(frame: CGRect) {
@@ -105,12 +106,14 @@ class ShopTypeCVCell: UICollectionViewCell {
        }
     
     func configureCell(tag : Int,data: FilterShopTypeCellData) {
-       clearButton.tag = tag
+      
         switch data.state {
         case .goldMerchant :
+             clearButton.tag = 0
             nameLabel.text = "Gold Merchant"
             break
         case .official :
+            clearButton.tag = 1
             nameLabel.text = "Official Store"
             break
         }

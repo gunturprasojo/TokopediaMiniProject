@@ -13,8 +13,132 @@ import RxDataSources
 
 class ShopTypeVC: UIViewController {
 
+    lazy private var tableView: UITableView = {
+           let tv = UITableView(frame: .zero, style: .grouped)
+            tv.register(ShopTypeTVCell.self, forCellReuseIdentifier: ShopTypeTVCell.reuseIdentifier)
+             tv.estimatedRowHeight = 80
+             tv.rowHeight = 80
+             tv.translatesAutoresizingMaskIntoConstraints = false
+             tv.separatorStyle = .none
+             tv.sectionHeaderHeight = 10
+             tv.estimatedSectionHeaderHeight = 10
+             return tv
+         }()
+       
+       let backButton = UIBarButtonItem(title: "", style: .plain, target: self, action: #selector(popThisVC))
+       
+       lazy private var buttonFilter: UIButton = {
+           [unowned self] in
+           let btn = UIButton(frame: .zero)
+           btn.setTitle("Apply", for: .normal)
+           btn.titleLabel?.font =  .systemFont(ofSize: 17, weight: .heavy)
+           btn.setTitleColor(.white, for: .normal)
+           btn.backgroundColor = .commonGreen
+           btn.translatesAutoresizingMaskIntoConstraints = false
+           return btn
+       }()
+       
+       lazy private var buttonReset = UIBarButtonItem(title: "Reset", style: .plain, target: self , action: #selector(resetData))
+    
+    
+        var filterShopTypeCellData = FilterShopTypeCellData(state: .goldMerchant, goldMerchant: 2,isOfficial: true)
+     
+        let viewModel = ShopTypeVM()
+        private let disposeBag = DisposeBag()
+    
         override func viewDidLoad() {
             super.viewDidLoad()
             self.view.backgroundColor = .white
+            self.setupView()
+            self.setupViewModel()
+            self.viewModelPayLoad.accept(filterShopTypeCellData)
         }
+    
+     let relayModel = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: 2, isOfficial: true))
+     let viewModelPayLoad = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: 2,isOfficial: true))
+ 
+    
+}
+
+extension ShopTypeVC {
+    @objc func resetData(){
+              print("reseted")
+          }
+       
+       @objc func popThisVC(){
+           self.navigationController?.popViewController(animated: true)
+       }
+    
+    private func setupView() {
+            backButton.tintColor = UIColor.white
+            title = "Shop Type"
+            self.navigationController?.navigationBar.tintColor = .black
+        
+            view.addSubview(tableView)
+            view.addSubview(buttonFilter)
+        
+           NSLayoutConstraint.activate([
+               tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
+               tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
+               tableView.topAnchor.constraint(equalTo: view.topAnchor),
+               tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor,
+                                                      constant: -(self.view.frame.height * 0.1)),
+               
+               buttonFilter.leftAnchor.constraint(equalTo: view.leftAnchor),
+               buttonFilter.rightAnchor.constraint(equalTo: view.rightAnchor),
+               buttonFilter.topAnchor.constraint(equalTo: tableView.bottomAnchor),
+               buttonFilter.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+           ])
+        tableView.backgroundColor = UIColor(red: 242/255, green: 242/255, blue: 242/255, alpha: 1)
+    }
+    
+}
+
+
+extension ShopTypeVC {
+    
+    private func setupViewModel(){
+        let dataSource = RxTableViewSectionedReloadDataSource<SectionModel<String, CellModel>>(configureCell: { dataSource, table, indexPath, item in
+          switch item {
+          case .goldMerchant(let shopTypeCellData) :
+            return self.viewModel.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
+          case .official(let shopTypeCellData) :
+            return self.viewModel.makeCellShopType(table:  self.tableView, element: shopTypeCellData, indexPath: indexPath)
+          }
+        })
+        
+        let input = ShopTypeVM.Input(
+            didSetPayloadTrigger: self.viewModelPayLoad.asDriver(),
+            resetPayloadTrigger: relayModel.asDriver(),
+            applyFilter: self.buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
+           )
+           
+        let output = self.viewModel.transform(input: input)
+        
+        output.cellData.asObservable().bind(
+            onNext : {
+            value in
+            self.filterShopTypeCellData = value
+                
+            let section = Observable.just([
+              SectionModel(model: "Gold Merchant", items: [
+                CellModel.goldMerchant(FilterShopTypeCellData(state: .goldMerchant, goldMerchant: self.filterShopTypeCellData.goldMerchant, isOfficial: self.filterShopTypeCellData.isOfficial))
+              ]),
+              SectionModel(model: "Official", items: [
+                CellModel.official(FilterShopTypeCellData(state: .official, goldMerchant: self.filterShopTypeCellData.goldMerchant, isOfficial: self.filterShopTypeCellData.isOfficial))
+              ])
+            ])
+            self.tableView.rx.base.dataSource = nil
+            section.bind(to: self.tableView.rx.items(dataSource: dataSource)).disposed(by: self.disposeBag)
+                
+            }
+        ).disposed(by: disposeBag)
+        
+    }
+    
+    enum CellModel {
+      case goldMerchant(FilterShopTypeCellData)
+      case official(FilterShopTypeCellData)
+    }
+       
 }

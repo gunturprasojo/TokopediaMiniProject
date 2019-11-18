@@ -77,7 +77,19 @@ class FilterShopTypeTVCell: UITableViewCell {
     private let viewModel = FilterShopTypeCellVM()
     var isAbleToNavigate = true
     let relayButtonClear = BehaviorRelay<Int>(value: 0)
-
+    
+    
+    let relayGoldMerchant = BehaviorRelay<Bool>(value: true)
+    let relayOfficial = BehaviorRelay<Bool>(value: true)
+    public var callbackGoldMerchant : ((Bool)->())?
+    public var callbackOfficial : ((Bool)->())?
+    
+    
+    struct ShopTypeCellOutput {
+        let isGoldMerchant : Driver<Bool>
+        let isOfficial : Driver<Bool>
+    }
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupView()
@@ -118,9 +130,13 @@ class FilterShopTypeTVCell: UITableViewCell {
     
     let disposeBag = DisposeBag()
     
+    let relayButton = BehaviorRelay<Int>(value: 0)
+    
+    var relayData = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: SearchConstant.goldMerchant, isOfficial: SearchConstant.offical))
+    
     func setupViewModel(data: FilterShopTypeCellData){
     
-        let relayData = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: data.goldMerchant, isOfficial: data.isOfficial))
+        self.relayData = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: data.goldMerchant, isOfficial: data.isOfficial))
       
         let dataSource = RxCollectionViewSectionedReloadDataSource<SectionFilterShopTypeCellData>(
               configureCell : {
@@ -128,12 +144,17 @@ class FilterShopTypeTVCell: UITableViewCell {
                 let cell = collView.dequeueReusableCell(withReuseIdentifier: ShopTypeCVCell.shopTypeReuseIdentifier,
                    for: indexPath) as! ShopTypeCVCell
                 cell.configureCell(tag:indexPath.section,data: item)
-                cell.relayButton.asObservable().do(
-                    onNext: {
-                        value in
-                        print("vaaal : \(value)")
+                cell.relayButtons = {
+                    value in
+                    if value == 0
+                    {
+                        self.relayGoldMerchant.accept(!self.relayGoldMerchant.value)
+                        self.callbackGoldMerchant?(self.relayGoldMerchant.value)
+                    }else {
+                        self.relayOfficial.accept(!self.relayOfficial.value)
+                        self.callbackOfficial?(self.relayOfficial.value)
                     }
-                )
+                }
                 return cell
           }
        )
@@ -157,14 +178,25 @@ class FilterShopTypeTVCell: UITableViewCell {
                   self.navigateToShopType()
             }
         ).disposed(by: disposeBag)
-    
+        
     }
-    let shopTypeVC = ShopTypeVC()
     
+    func test(){
+        print("test")
+    }
+    
+    let shopTypeVC = ShopTypeVC()
+    func cellOutput() -> ShopTypeCellOutput {
+        return ShopTypeCellOutput(
+            isGoldMerchant: relayGoldMerchant.asDriver(),
+            isOfficial: relayOfficial.asDriver()
+        )
+    }
     
     private func navigateToShopType(){
         if self.isAbleToNavigate {
             isAbleToNavigate = false
+            shopTypeVC.filterShopTypeCellData = self.relayData.value
             UIApplication.topViewController()?.navigationController?.pushViewController(shopTypeVC, animated: true)
         }
     }

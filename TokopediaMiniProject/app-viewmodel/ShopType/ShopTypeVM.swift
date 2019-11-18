@@ -20,93 +20,73 @@ class ShopTypeVM: NSObject {
     
     //============ Business Process
     struct Input {
-        let didSetPayloadTrigger : Driver<SearchViewModelData>
+        let didSetPayloadTrigger : Driver<FilterShopTypeCellData>
+        let resetPayloadTrigger : Driver<FilterShopTypeCellData>
         let applyFilter : Driver<Void>
     }
     
     struct Output {
-         let cellData : Driver<SearchViewModelData>
+         let cellData : Driver<FilterShopTypeCellData>
     }
     //============ Business Process
     
-    
-    var servicePayload = SearchViewModelData()
-    let disposeBag = DisposeBag()
-    
-    
-    let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
-    
+    let relayModel = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: 2, isOfficial: true))
+
     func transform(input: Input) -> Output {
         let payloadModelTrigger = input.didSetPayloadTrigger.asDriver()
+        let resetModelTrigger = input.resetPayloadTrigger.asDriver()
         
-       let payLoadProcess = payloadModelTrigger.flatMapLatest{
-            value -> Driver<SearchViewModelData> in
-            self.relayModel.accept(value)
-        return self.relayModel.asDriver()
+        var payLoadProcess = payloadModelTrigger.flatMapLatest{
+                  value -> Driver<FilterShopTypeCellData> in
+                  self.relayModel.accept(value)
+                  return self.relayModel.asDriver()
         }
         
-        input.applyFilter.drive(
-            onNext: {
-                value in
-                self.applyFilter()
-            }
-        ).disposed(by: disposeBag)
-        
+        payLoadProcess = resetModelTrigger.flatMapLatest{
+                   val -> Driver<FilterShopTypeCellData> in
+            
+            self.relayModel.accept(FilterShopTypeCellData(state: .goldMerchant, goldMerchant: SearchConstant.goldMerchant, isOfficial: SearchConstant.offical))
+            return self.relayModel.asDriver()
+                   
+       }
+              
         return Output(
             cellData: payLoadProcess.asDriver()
         )
     }
     
     
-    var criteriaCell = FilterShopCriteriaTVCell()
-    var shopTypeCell = FilterShopTypeTVCell()
-    func makeCellShopCriteria(table : UITableView, element : FilterShopCriteriaCellData, indexPath: IndexPath) -> UITableViewCell{
-        self.criteriaCell = table.dequeueReusableCell(withIdentifier: FilterShopCriteriaTVCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaTVCell
-        self.criteriaCell.configureCell(with: element)
-        self.criteriaCell.selectionStyle = .none
-    
-        let criteriaCellOutput = self.criteriaCell.cellOutput()
-        criteriaCellOutput.wholeSaleControl.asObservable().subscribe(
-            onNext: {
-                value in
-                var tempData = SearchViewModelData()
-                tempData = self.relayModel.value
-                tempData.wholeSale = value
-                self.servicePayload = tempData
-            }
-        ).disposed(by: disposeBag)
-        
-        criteriaCellOutput.maximumPriceControl.asObservable().subscribe(
-            onNext: {
-                value in
-                var tempData = SearchViewModelData()
-                tempData = self.relayModel.value
-                tempData.valMaxPrice = value
-                self.servicePayload = tempData
-        }).disposed(by: disposeBag)
-        
-        
-        return  self.criteriaCell
-    }
-    
+    var shopTypeTVCell = ShopTypeTVCell()
     func makeCellShopType(table : UITableView, element : FilterShopTypeCellData, indexPath: IndexPath) -> UITableViewCell{
-        self.shopTypeCell =  table.dequeueReusableCell(withIdentifier: FilterShopTypeTVCell.reuseIdentifier, for: indexPath) as! FilterShopTypeTVCell
-        var temp = element
-        temp.goldMerchant = 2
-        temp.isOfficial = true
-        self.shopTypeCell.configureCell(with: temp)
-        self.shopTypeCell.selectionStyle = .none
-        return  self.shopTypeCell
-    }
+           self.shopTypeTVCell =  table.dequeueReusableCell(withIdentifier: ShopTypeTVCell.reuseIdentifier, for: indexPath) as! ShopTypeTVCell
+           let temp = element
+            self.shopTypeTVCell.selectionStyle = .none
+           self.shopTypeTVCell.configureCell(with: temp)
+            self.shopTypeTVCell.callbackTag = {
+                value in
+                if value == 0 {
+                    var tempData = self.relayModel.value
+                    if tempData.goldMerchant == SearchConstant.goldMerchant {
+                        tempData.goldMerchant = 0
+                    }else {
+                        tempData.goldMerchant = SearchConstant.goldMerchant
+                    }
+                    self.relayModel.accept(tempData)
+                }else {
+                    var tempData = self.relayModel.value
+                    tempData.isOfficial = !tempData.isOfficial
+                    self.relayModel.accept(tempData)
+                }
+                
+            }
+           return  self.shopTypeTVCell
+       }
+       
     
-   let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+    
 }
 
 
 extension ShopTypeVM {
-    func applyFilter(){
-        servicePayload.currentPageInquiry = 0
-        callbackPayload.accept(servicePayload)
-        UIApplication.topViewController()?.navigationController?.popViewController(animated: true)
-      }
+ 
 }

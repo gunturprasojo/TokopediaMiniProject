@@ -18,7 +18,7 @@ struct SearchViewModelData {
     var valMaxPrice : Int = 100000
     var wholeSale : Bool = true
     var official : Bool = true
-    var fShop : Int = 2
+    var fShop : Int = SearchConstant.goldMerchant
     var currentPageInquiry : Int = 0
     var lengthPageInquiry : Int = 10
 }

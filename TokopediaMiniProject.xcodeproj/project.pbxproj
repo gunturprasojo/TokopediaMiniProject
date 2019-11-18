@@ -12,6 +12,8 @@
 		B8015B6B237B5BA300DB3264 /* IntExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8015B6A237B5BA300DB3264 /* IntExtension.swift */; };
 		B8015B6E237B5C4400DB3264 /* FormatterStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8015B6D237B5C4400DB3264 /* FormatterStyle.swift */; };
 		B8094CC3237E344F002392C7 /* ShopTypeVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8094CC2237E344F002392C7 /* ShopTypeVM.swift */; };
+		B8111BF92383045F006055D6 /* SearchConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8111BF82383045F006055D6 /* SearchConstant.swift */; };
+		B8111BFB2383054B006055D6 /* ShopTypeTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8111BFA2383054B006055D6 /* ShopTypeTVCell.swift */; };
 		B81CF93523781E2F004A66BF /* FilterVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93423781E2F004A66BF /* FilterVC.swift */; };
 		B81CF93823782B79004A66BF /* FilterVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93723782B79004A66BF /* FilterVM.swift */; };
 		B81CF93D23786D87004A66BF /* FilterShopCriteriaTVCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B81CF93C23786D87004A66BF /* FilterShopCriteriaTVCell.swift */; };
@@ -73,6 +75,8 @@
 		B8015B6A237B5BA300DB3264 /* IntExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntExtension.swift; sourceTree = "<group>"; };
 		B8015B6D237B5C4400DB3264 /* FormatterStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterStyle.swift; sourceTree = "<group>"; };
 		B8094CC2237E344F002392C7 /* ShopTypeVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopTypeVM.swift; sourceTree = "<group>"; };
+		B8111BF82383045F006055D6 /* SearchConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchConstant.swift; sourceTree = "<group>"; };
+		B8111BFA2383054B006055D6 /* ShopTypeTVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopTypeTVCell.swift; sourceTree = "<group>"; };
 		B81CF93423781E2F004A66BF /* FilterVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterVC.swift; sourceTree = "<group>"; };
 		B81CF93723782B79004A66BF /* FilterVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterVM.swift; sourceTree = "<group>"; };
 		B81CF93C23786D87004A66BF /* FilterShopCriteriaTVCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterShopCriteriaTVCell.swift; sourceTree = "<group>"; };
@@ -189,6 +193,14 @@
 				B8094CC2237E344F002392C7 /* ShopTypeVM.swift */,
 			);
 			path = ShopType;
+			sourceTree = "<group>";
+		};
+		B8111BF72383043D006055D6 /* SearchConstant */ = {
+			isa = PBXGroup;
+			children = (
+				B8111BF82383045F006055D6 /* SearchConstant.swift */,
+			);
+			path = SearchConstant;
 			sourceTree = "<group>";
 		};
 		B81CF93323781E1A004A66BF /* Filter */ = {
@@ -361,6 +373,7 @@
 			children = (
 				B89D721523746F180011DA72 /* Service */,
 				B8015B6C237B5C1500DB3264 /* Formatter */,
+				B8111BF72383043D006055D6 /* SearchConstant */,
 			);
 			path = "app-constant";
 			sourceTree = "<group>";
@@ -437,6 +450,7 @@
 			children = (
 				B81CF93C23786D87004A66BF /* FilterShopCriteriaTVCell.swift */,
 				B81CF94023786E8D004A66BF /* FilterShopTypeTVCell.swift */,
+				B8111BFA2383054B006055D6 /* ShopTypeTVCell.swift */,
 			);
 			path = UITableViewCell;
 			sourceTree = "<group>";
@@ -690,6 +704,7 @@
 				B81CF93823782B79004A66BF /* FilterVM.swift in Sources */,
 				B89D721223746D9A0011DA72 /* BaseService.swift in Sources */,
 				B89D7233237486C60011DA72 /* MainLoadingView.swift in Sources */,
+				B8111BF92383045F006055D6 /* SearchConstant.swift in Sources */,
 				B89D71E123746CB00011DA72 /* TokopediaMiniProject.xcdatamodeld in Sources */,
 				B8400F702376BDC70031419B /* BehaviourRelay.swift in Sources */,
 				B8094CC3237E344F002392C7 /* ShopTypeVM.swift in Sources */,
@@ -703,6 +718,7 @@
 				B81CF93D23786D87004A66BF /* FilterShopCriteriaTVCell.swift in Sources */,
 				B8015B6E237B5C4400DB3264 /* FormatterStyle.swift in Sources */,
 				B89D721E23746FF70011DA72 /* VersionSvc.swift in Sources */,
+				B8111BFB2383054B006055D6 /* ShopTypeTVCell.swift in Sources */,
 				B89D722E237482370011DA72 /* SearchVC.swift in Sources */,
 				B89D722923747C460011DA72 /* ProductListCVCell.swift in Sources */,
 				B89D72362374A9A50011DA72 /* UIImageViewExtension.swift in Sources */,

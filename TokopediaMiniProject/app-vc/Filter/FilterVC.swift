@@ -41,6 +41,8 @@ class FilterVC: UIViewController {
         return btn
     }()
     
+    lazy private var buttonReset = UIBarButtonItem(title: "Reset", style: .plain, target: self , action: #selector(resetData))
+    
     lazy private var nextPageIndicator : UIActivityIndicatorView = {
         [unowned self] in
         let act = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
@@ -64,7 +66,7 @@ class FilterVC: UIViewController {
     private let disposeBag = DisposeBag()
     
     override func viewDidAppear(_ animated: Bool) {
-    
+        
     }
     
     override func viewDidLoad() {
@@ -72,12 +74,25 @@ class FilterVC: UIViewController {
         print("didload")
         servicePayload = viewModelPayLoad.value
         self.setupView()
+        self.setupNavigationItem()
         self.setupViewModel()
         self.viewModelPayLoad.accept(servicePayload)
     }
+    
+    func setupNavigationItem(){
+        self.navigationItem.rightBarButtonItem = self.buttonReset
+    }
+    
+    let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+
 }
 
 extension FilterVC {
+    
+    @objc func resetData(){
+           print("reseted")
+           relayModel.accept(SearchViewModelData())
+       }
     
     @objc func popThisVC(){
         servicePayload.currentPageInquiry = 0
@@ -131,6 +146,9 @@ extension FilterVC {
         
         let input = FilterVM.Input(
             didSetPayloadTrigger: viewModelPayLoad.asDriver(),
+            resetPayloadTrigger: relayModel.asDriver(),
+            didSetGoldMerchant: relayModel.asDriver(),
+            didsetOfficial: relayModel.asDriver(),
             applyFilter: self.buttonFilter.rx.controlEvent(.touchUpInside).asDriver()
            )
            

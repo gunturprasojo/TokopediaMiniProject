@@ -19,11 +19,14 @@ class FilterVM: NSObject {
     //============ Business Process
     struct Input {
         let didSetPayloadTrigger : Driver<SearchViewModelData>
+        let resetPayloadTrigger : Driver<SearchViewModelData>
+        let didSetGoldMerchant : Driver<SearchViewModelData>
+        let didsetOfficial : Driver<SearchViewModelData>
         let applyFilter : Driver<Void>
     }
     
     struct Output {
-         let cellData : Driver<SearchViewModelData>
+        let cellData : Driver<SearchViewModelData>
     }
     //============ Business Process
     
@@ -31,16 +34,24 @@ class FilterVM: NSObject {
     var servicePayload = SearchViewModelData()
     let disposeBag = DisposeBag()
     
-    
+    var isAbleToReset : Bool = true
     let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     
     func transform(input: Input) -> Output {
         let payloadModelTrigger = input.didSetPayloadTrigger.asDriver()
+        let resetModelTrigger = input.resetPayloadTrigger.asDriver()
         
-       let payLoadProcess = payloadModelTrigger.flatMapLatest{
+        var payLoadProcess = payloadModelTrigger.flatMapLatest{
             value -> Driver<SearchViewModelData> in
             self.relayModel.accept(value)
-        return self.relayModel.asDriver()
+            return self.relayModel.asDriver()
+        }
+        
+        payLoadProcess = resetModelTrigger.flatMapLatest{
+            val -> Driver<SearchViewModelData> in
+            self.relayModel.accept(SearchViewModelData())
+            return self.relayModel.asDriver()
+            
         }
         
         input.applyFilter.drive(
@@ -90,10 +101,33 @@ class FilterVM: NSObject {
     func makeCellShopType(table : UITableView, element : FilterShopTypeCellData, indexPath: IndexPath) -> UITableViewCell{
         self.shopTypeCell =  table.dequeueReusableCell(withIdentifier: FilterShopTypeTVCell.reuseIdentifier, for: indexPath) as! FilterShopTypeTVCell
         var temp = element
-        temp.goldMerchant = 2
-        temp.isOfficial = true
-        self.shopTypeCell.configureCell(with: temp)
+        
         self.shopTypeCell.selectionStyle = .none
+        
+        self.shopTypeCell.callbackGoldMerchant = {
+            value in
+            if value {
+                self.servicePayload.fShop = 2
+                temp.goldMerchant = 2
+            }else {
+                 self.servicePayload.fShop = 0
+                temp.goldMerchant = 0
+            }
+            self.shopTypeCell.configureCell(with: temp)
+        }
+        
+        self.shopTypeCell.callbackOfficial = {
+            value in
+            self.servicePayload.official = value
+             temp.isOfficial = value
+            self.shopTypeCell.configureCell(with: temp)
+        }
+        
+       
+       
+        self.shopTypeCell.configureCell(with: temp)
+        
+        
         return  self.shopTypeCell
     }
     
