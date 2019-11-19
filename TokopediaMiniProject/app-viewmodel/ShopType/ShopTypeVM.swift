@@ -26,29 +26,45 @@ class ShopTypeVM: NSObject {
     }
     
     struct Output {
-         let cellData : Driver<FilterShopTypeCellData>
+        let cellData : Driver<FilterShopTypeCellData>
     }
     //============ Business Process
     
     let relayModel = BehaviorRelay<FilterShopTypeCellData>(value: FilterShopTypeCellData(state: .goldMerchant, goldMerchant: 2, isOfficial: true))
+    
+    let relayGoldMerchant = BehaviorRelay<Bool>(value: true)
+    let relayIsOfficial = BehaviorRelay<Bool>(value: true)
+    
+     let disposeBag = DisposeBag()
 
     func transform(input: Input) -> Output {
         let payloadModelTrigger = input.didSetPayloadTrigger.asDriver()
         let resetModelTrigger = input.resetPayloadTrigger.asDriver()
         
+       
+        
         var payLoadProcess = payloadModelTrigger.flatMapLatest{
                   value -> Driver<FilterShopTypeCellData> in
-                  self.relayModel.accept(value)
-                  return self.relayModel.asDriver()
+                    self.relayModel.accept(value)
+                    
+                    self.relayIsOfficial.accept(value.isOfficial)
+                    return self.relayModel.asDriver()
         }
         
         payLoadProcess = resetModelTrigger.flatMapLatest{
                    val -> Driver<FilterShopTypeCellData> in
-            
-            self.relayModel.accept(FilterShopTypeCellData(state: .goldMerchant, goldMerchant: SearchConstant.goldMerchant, isOfficial: SearchConstant.offical))
+                    self.relayGoldMerchant.accept((val.goldMerchant == 2))
+                    self.relayIsOfficial.accept(val.isOfficial)
+                    self.relayModel.accept(FilterShopTypeCellData(state: .goldMerchant, goldMerchant: val.goldMerchant, isOfficial: val.isOfficial))
             return self.relayModel.asDriver()
-                   
        }
+        
+        input.applyFilter.drive(
+            onNext: {
+            value in
+                    self.applyFilter()
+            }
+        ).disposed(by: disposeBag)
               
         return Output(
             cellData: payLoadProcess.asDriver()
@@ -58,10 +74,10 @@ class ShopTypeVM: NSObject {
     
     var shopTypeTVCell = ShopTypeTVCell()
     func makeCellShopType(table : UITableView, element : FilterShopTypeCellData, indexPath: IndexPath) -> UITableViewCell{
-           self.shopTypeTVCell =  table.dequeueReusableCell(withIdentifier: ShopTypeTVCell.reuseIdentifier, for: indexPath) as! ShopTypeTVCell
-           let temp = element
+            self.shopTypeTVCell =  table.dequeueReusableCell(withIdentifier: ShopTypeTVCell.reuseIdentifier, for: indexPath) as! ShopTypeTVCell
+            let temp = element
             self.shopTypeTVCell.selectionStyle = .none
-           self.shopTypeTVCell.configureCell(with: temp)
+            self.shopTypeTVCell.configureCell(with: temp)
             self.shopTypeTVCell.callbackTag = {
                 value in
                 if value == 0 {
@@ -71,15 +87,16 @@ class ShopTypeVM: NSObject {
                     }else {
                         tempData.goldMerchant = SearchConstant.goldMerchant
                     }
+                    self.relayGoldMerchant.accept((tempData.goldMerchant == 2))
                     self.relayModel.accept(tempData)
                 }else {
                     var tempData = self.relayModel.value
                     tempData.isOfficial = !tempData.isOfficial
+                    self.relayIsOfficial.accept(tempData.isOfficial)
                     self.relayModel.accept(tempData)
                 }
-                
             }
-           return  self.shopTypeTVCell
+            return  self.shopTypeTVCell
        }
        
     
@@ -88,5 +105,15 @@ class ShopTypeVM: NSObject {
 
 
 extension ShopTypeVM {
- 
+    func applyFilter(){
+        var tempFilterData = self.relayModel.value
+        if relayGoldMerchant.value {
+            tempFilterData.goldMerchant = 2
+        }else {
+            tempFilterData.goldMerchant = 0
+        }
+        tempFilterData.isOfficial = relayIsOfficial.value
+        self.relayModel.accept(tempFilterData)
+        UIApplication.topViewController()?.navigationController?.popViewController(animated: true)
+      }
 }

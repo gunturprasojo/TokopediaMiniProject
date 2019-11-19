@@ -13,7 +13,7 @@ class ShopTypeTVCell: UITableViewCell {
     private let lblTitleShopType: UILabel = {
                 let label = UILabel()
                 label.font = .systemFont(ofSize: 15)
-                label.textColor = UIColor.black.withAlphaComponent(0.3)
+                label.textColor = UIColor.black.withAlphaComponent(0.8)
                 label.numberOfLines = 1
                 label.translatesAutoresizingMaskIntoConstraints = false
                 label.text = "Gold Merchant"
@@ -22,7 +22,7 @@ class ShopTypeTVCell: UITableViewCell {
        
        private let btnDetailShopType: UIButton = {
                let btn = UIButton()
-              btn.setTitle("X", for: .normal)
+                btn.setImage(SearchConstant.checkBoxChecked!, for: .normal)
               btn.setTitleColor(.lightGray, for: .normal)
               btn.translatesAutoresizingMaskIntoConstraints = false
             
@@ -68,13 +68,15 @@ class ShopTypeTVCell: UITableViewCell {
            self.addSubview(btnDetailShopType)
            btnDetailShopType.addTarget(self, action: #selector(actButton(_:)), for: .touchUpInside)
            NSLayoutConstraint.activate([
-              lblTitleShopType.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0),
-              lblTitleShopType.leadingAnchor.constraint(equalTo: self.leadingAnchor , constant: 15),
-              lblTitleShopType.heightAnchor.constraint(equalToConstant: 50),
               
-              btnDetailShopType.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant:0),
-              btnDetailShopType.trailingAnchor.constraint(equalTo: self.trailingAnchor , constant: -15),
-              btnDetailShopType.heightAnchor.constraint(equalToConstant: 50)
+            btnDetailShopType.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant:0),
+            btnDetailShopType.leadingAnchor.constraint(equalTo: self.leadingAnchor , constant: 15),
+            btnDetailShopType.heightAnchor.constraint(equalToConstant: 20),
+            btnDetailShopType.widthAnchor.constraint(equalToConstant: 20),
+                
+            lblTitleShopType.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: 0),
+            lblTitleShopType.leadingAnchor.constraint(equalTo: self.btnDetailShopType.trailingAnchor , constant: 10),
+            lblTitleShopType.heightAnchor.constraint(equalToConstant: 15)
            ])
     }
     
@@ -84,18 +86,18 @@ class ShopTypeTVCell: UITableViewCell {
             case .goldMerchant:
                 self.lblTitleShopType.text = "Gold Merchant"
                 if data.goldMerchant == SearchConstant.goldMerchant {
-                    self.btnDetailShopType.setTitle("X", for: .normal)
+                    btnDetailShopType.setImage(SearchConstant.checkBoxChecked!, for: .normal)
                 }else {
-                     self.btnDetailShopType.setTitle("-", for: .normal)
+                    btnDetailShopType.setImage(SearchConstant.checkBoxUnchecked!, for: .normal)
                 }
                 break
             case .official :
                 self.lblTitleShopType.text = "Official"
                 
                 if data.isOfficial {
-                     self.btnDetailShopType.setTitle("X", for: .normal)
+                    btnDetailShopType.setImage(SearchConstant.checkBoxChecked!, for: .normal)
                 }else {
-                     self.btnDetailShopType.setTitle("-", for: .normal)
+                     btnDetailShopType.setImage(SearchConstant.checkBoxUnchecked!, for: .normal)
                 }
                 break
             }

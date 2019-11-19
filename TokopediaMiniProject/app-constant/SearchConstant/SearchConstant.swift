@@ -11,4 +11,7 @@ import UIKit
 class SearchConstant: NSObject {
     static let goldMerchant : Int = 2
     static let offical : Bool = true
+    
+    static let checkBoxChecked = UIImage(named: "ic_checBox_checked")
+    static let checkBoxUnchecked = UIImage(named: "ic_checkBox_unchecked")
 }

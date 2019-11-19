@@ -178,6 +178,8 @@ class FilterShopTypeTVCell: UITableViewCell {
                   self.navigateToShopType()
             }
         ).disposed(by: disposeBag)
+       
+        
         
     }
     
@@ -196,7 +198,17 @@ class FilterShopTypeTVCell: UITableViewCell {
     private func navigateToShopType(){
         if self.isAbleToNavigate {
             isAbleToNavigate = false
-            shopTypeVC.filterShopTypeCellData = self.relayData.value
+            shopTypeVC.relayModel.accept(self.relayData.value)
+            shopTypeVC.viewModelPayLoad.accept(self.relayData.value)
+             
+            shopTypeVC.viewModel.relayModel.asDriver().drive(
+                onNext : {
+                    value in
+                    print(value)
+                    self.relayData.accept(value)
+                }
+                ).disposed(by: disposeBag)
+            
             UIApplication.topViewController()?.navigationController?.pushViewController(shopTypeVC, animated: true)
         }
     }

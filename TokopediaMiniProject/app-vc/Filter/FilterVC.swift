@@ -103,7 +103,10 @@ extension FilterVC {
     private func setupView() {
             backButton.tintColor = UIColor.white
             title = "Filter"
-            self.navigationController?.navigationBar.tintColor = .black
+            self.navigationController?.navigationBar.backItem?.title = ""
+            self.navigationController?.navigationBar.tintColor = .commonGreen
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil);
+            navigationItem.leftItemsSupplementBackButton = true;
         
             view.addSubview(tableView)
             view.addSubview(buttonFilter)

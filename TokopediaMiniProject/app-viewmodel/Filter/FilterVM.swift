@@ -37,6 +37,11 @@ class FilterVM: NSObject {
     var isAbleToReset : Bool = true
     let relayModel = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     
+    var criteriaCell = FilterShopCriteriaTVCell()
+    var shopTypeCell = FilterShopTypeTVCell()
+    
+    let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+    
     func transform(input: Input) -> Output {
         let payloadModelTrigger = input.didSetPayloadTrigger.asDriver()
         let resetModelTrigger = input.resetPayloadTrigger.asDriver()
@@ -66,9 +71,6 @@ class FilterVM: NSObject {
         )
     }
     
-    
-    var criteriaCell = FilterShopCriteriaTVCell()
-    var shopTypeCell = FilterShopTypeTVCell()
     func makeCellShopCriteria(table : UITableView, element : FilterShopCriteriaCellData, indexPath: IndexPath) -> UITableViewCell{
         self.criteriaCell = table.dequeueReusableCell(withIdentifier: FilterShopCriteriaTVCell.reuseIdentifier, for: indexPath) as! FilterShopCriteriaTVCell
         self.criteriaCell.configureCell(with: element)
@@ -130,8 +132,7 @@ class FilterVM: NSObject {
         
         return  self.shopTypeCell
     }
-    
-   let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
+   
 }
 
 

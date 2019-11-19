@@ -72,10 +72,15 @@ class SearchVC: ViewController {
     //Setup
 extension SearchVC {
     private func setupView() {
-           title = "Search"
+            title = "Search"
             view.addSubview(collectionView)
             view.addSubview(buttonFilter)
             view.addSubview(nextPageIndicator)
+        
+            self.navigationController?.navigationBar.backItem?.title = ""
+            self.navigationController?.navigationBar.tintColor = .commonGreen
+            navigationItem.backBarButtonItem = UIBarButtonItem(title: " ", style: .plain, target: nil, action: nil);
+            navigationItem.leftItemsSupplementBackButton = true;
         
            NSLayoutConstraint.activate([
                collectionView.leftAnchor.constraint(equalTo: view.leftAnchor),
