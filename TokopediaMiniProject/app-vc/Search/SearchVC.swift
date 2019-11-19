@@ -101,6 +101,7 @@ extension SearchVC {
                
            ])
         
+        collectionView.accessibilityLabel = AccLabel.collectionSearchVC
         collectionView.refreshControl = refreshControl
         collectionView.backgroundColor = .white
     }

@@ -144,6 +144,8 @@ class FilterShopCriteriaTVCell: UITableViewCell {
             switchWholeSale.centerYAnchor.constraint(equalTo: lblTitleWholeSale.centerYAnchor),
             switchWholeSale.trailingAnchor.constraint(equalTo: lblValueMaximumPrice.trailingAnchor)
           ])
+        
+        switchWholeSale.accessibilityLabel = AccLabel.switchWholeSaleFilterVC
       }
       
       func configureCell(with data: FilterShopCriteriaCellData) {
