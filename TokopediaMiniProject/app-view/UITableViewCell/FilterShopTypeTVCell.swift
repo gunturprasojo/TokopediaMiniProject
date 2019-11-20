@@ -172,20 +172,13 @@ class FilterShopTypeTVCell: UITableViewCell {
             .bind(to: collectionView.rx.items(dataSource: dataSource)
         ).disposed(by: disposeBag)
         
-        
         output.navigateToShopType.drive(
                onNext: {
                   self.navigateToShopType()
             }
         ).disposed(by: disposeBag)
-       
-        
-        
     }
     
-    func test(){
-        print("test")
-    }
     
     let shopTypeVC = ShopTypeVC()
     func cellOutput() -> ShopTypeCellOutput {

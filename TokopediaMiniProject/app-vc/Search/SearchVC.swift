@@ -29,7 +29,6 @@ class SearchVC: ViewController {
         return cv
     }()
     
-    
     lazy private var buttonFilter: UIButton = {
         [unowned self] in
         let btn = UIButton(frame: .zero)
@@ -49,10 +48,8 @@ class SearchVC: ViewController {
         return act
     }()
     
-    
-    
     let refreshControl = UIRefreshControl()
-    
+
     //Model
     private let viewModel = SearchVM()
     
@@ -64,10 +61,7 @@ class SearchVC: ViewController {
         self.setupViewModel()
         self.refreshControl.rx.base.sendActions(for: .valueChanged)
     }
-    
-  
 }
-
 
     //Setup
 extension SearchVC {
@@ -159,9 +153,6 @@ extension SearchVC {
         ).disposed(by: disposeBag)
     }
     
-    
-    
-    
     private func isShowLoadMore(isShow : Bool){
         if isShow {
                 self.buttonFilter.setTitle("Loading Data", for: .normal)
@@ -177,10 +168,6 @@ extension SearchVC {
             })
         }
         self.buttonFilter.isEnabled = !isShow
-    }
-    
-    func test(){
-        print("test")
     }
     
 }

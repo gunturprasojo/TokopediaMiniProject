@@ -24,23 +24,9 @@ class ImageStreamManager {
         return nil
     }
     
-    class func removeImageStream(_ lookup: ImageStreamCase){
-        UserDefaults.standard.removeObject(forKey: lookup.rawValue)
-    }
-    
-    class func removeAllImageStream(){
-        ImageStreamCase.allCases.forEach { lookup in
-            UserDefaults.standard.removeObject(forKey: lookup.rawValue)
-        }
-    }
-    
     class func removeData(){
         let domain = Bundle.main.bundleIdentifier!
         UserDefaults.standard.removePersistentDomain(forName: domain)
         UserDefaults.standard.synchronize()
     }
-}
-
-enum ImageStreamCase: String, CaseIterable {
-    case CellProductImageKey = "CellImageKey"
 }

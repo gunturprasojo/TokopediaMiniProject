@@ -17,7 +17,6 @@ struct Product : Decodable {
 
 struct ProductListResponse : Decodable {
     let data : [Product]
-    
 }
 
 

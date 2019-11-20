@@ -25,7 +25,6 @@ class ShopTypeTVCell: UITableViewCell {
                 btn.setImage(SearchConstant.checkBoxChecked!, for: .normal)
               btn.setTitleColor(.lightGray, for: .normal)
               btn.translatesAutoresizingMaskIntoConstraints = false
-            
               return btn
        }()
     

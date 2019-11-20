@@ -41,8 +41,6 @@ class ShopTypeVM: NSObject {
         let payloadModelTrigger = input.didSetPayloadTrigger.asDriver()
         let resetModelTrigger = input.resetPayloadTrigger.asDriver()
         
-       
-        
         var payLoadProcess = payloadModelTrigger.flatMapLatest{
                   value -> Driver<FilterShopTypeCellData> in
                     self.relayModel.accept(value)
@@ -81,19 +79,19 @@ class ShopTypeVM: NSObject {
             self.shopTypeTVCell.callbackTag = {
                 value in
                 if value == 0 {
-                    var tempData = self.relayModel.value
-                    if tempData.goldMerchant == SearchConstant.goldMerchant {
-                        tempData.goldMerchant = 0
+                    var tempRelay = self.relayModel.value
+                    if tempRelay.goldMerchant == SearchConstant.goldMerchant {
+                        tempRelay.goldMerchant = 0
                     }else {
-                        tempData.goldMerchant = SearchConstant.goldMerchant
+                        tempRelay.goldMerchant = SearchConstant.goldMerchant
                     }
-                    self.relayGoldMerchant.accept((tempData.goldMerchant == 2))
-                    self.relayModel.accept(tempData)
+                    self.relayGoldMerchant.accept((tempRelay.goldMerchant == 2))
+                    self.relayModel.accept(tempRelay)
                 }else {
-                    var tempData = self.relayModel.value
-                    tempData.isOfficial = !tempData.isOfficial
-                    self.relayIsOfficial.accept(tempData.isOfficial)
-                    self.relayModel.accept(tempData)
+                    var tempRelay = self.relayModel.value
+                    tempRelay.isOfficial = !tempRelay.isOfficial
+                    self.relayIsOfficial.accept(tempRelay.isOfficial)
+                    self.relayModel.accept(tempRelay)
                 }
             }
             return  self.shopTypeTVCell

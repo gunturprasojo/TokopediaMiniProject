@@ -11,15 +11,6 @@ import RxSwift
 import RxCocoa
 import RxDataSources
 
-
-
-
-struct ShopTypeCollectionViewCellData
-{
-    
-}
-
-
 class ShopTypeCVCell: UICollectionViewCell {
     
     private let containerView: UIView = {
@@ -35,7 +26,7 @@ class ShopTypeCVCell: UICollectionViewCell {
     private let nameLabel: UILabel = {
              let label = UILabel()
              label.font = .systemFont(ofSize: 12)
-            label.textColor = .darkGray//UIColor.black.withAlphaComponent(0.7)
+            label.textColor = .darkGray
              label.numberOfLines = 1
              label.translatesAutoresizingMaskIntoConstraints = false
              return label
@@ -54,7 +45,6 @@ class ShopTypeCVCell: UICollectionViewCell {
     
     static let shopTypeReuseIdentifier = "ShopTypeCollectionViewCell"
     
-
     public var relayButtons : ((Int)->())?
     
    @objc func actClear(_ btn : UIButton){
@@ -63,13 +53,13 @@ class ShopTypeCVCell: UICollectionViewCell {
    }
     
     override init(frame: CGRect) {
-           super.init(frame: frame)
-           setupView()
-         }
-       
-     required init?(coder: NSCoder) {
-         fatalError("init(coder:) has not been implemented")
+       super.init(frame: frame)
+       setupView()
      }
+       
+    required init?(coder: NSCoder) {
+     fatalError("init(coder:) has not been implemented")
+    }
     
     private func setupView() {
         self.setupNameLabel()
@@ -81,32 +71,31 @@ class ShopTypeCVCell: UICollectionViewCell {
     }
        
        
-       private func setupNameLabel(){
-            nameLabel.numberOfLines = 2
-       }
+   private func setupNameLabel(){
+        nameLabel.numberOfLines = 2
+   }
        
-       private func setupConstraints(){
-           NSLayoutConstraint.activate([
-                   containerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-                   containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-                   containerView.heightAnchor.constraint(equalToConstant: 45),
-                   containerView.widthAnchor.constraint(equalToConstant:  150),
+   private func setupConstraints(){
+       NSLayoutConstraint.activate([
+               containerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+               containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+               containerView.heightAnchor.constraint(equalToConstant: 45),
+               containerView.widthAnchor.constraint(equalToConstant:  150),
+               
+               nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+               nameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor ,constant: 15),
+               nameLabel.heightAnchor.constraint(equalToConstant: 45),
+               nameLabel.widthAnchor.constraint(equalToConstant:  150),
+               
+               clearButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+               clearButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+               clearButton.heightAnchor.constraint(equalToConstant: 45),
+               clearButton.widthAnchor.constraint(equalToConstant:  45)
                    
-                   nameLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-                   nameLabel.leadingAnchor.constraint(equalTo: containerView.leadingAnchor ,constant: 15),
-                   nameLabel.heightAnchor.constraint(equalToConstant: 45),
-                   nameLabel.widthAnchor.constraint(equalToConstant:  150),
-                   
-                   clearButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-                   clearButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-                   clearButton.heightAnchor.constraint(equalToConstant: 45),
-                   clearButton.widthAnchor.constraint(equalToConstant:  45)
-                       
-                  ])
-       }
+              ])
+   }
     
     func configureCell(tag : Int,data: FilterShopTypeCellData) {
-      
         switch data.state {
         case .goldMerchant :
              clearButton.tag = 0
@@ -119,7 +108,5 @@ class ShopTypeCVCell: UICollectionViewCell {
         }
         
     }
-    
-  
    
 }

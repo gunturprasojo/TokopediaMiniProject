@@ -51,9 +51,6 @@ class ShopTypeVC: UIViewController {
             self.setupView()
             self.setupViewModel()
         }
-    
- 
-    
 }
 
 extension ShopTypeVC {
@@ -66,16 +63,14 @@ extension ShopTypeVC {
     }
     
     private func setupView() {
-            backButton.tintColor = UIColor.white
-          title = "Shop Type"
+        backButton.tintColor = UIColor.white
+        title = "Shop Type"
         
         self.navigationController?.navigationBar.tintColor = .commonGreen
         self.navigationItem.rightBarButtonItem = self.buttonReset
         self.navigationItem.backBarButtonItem = self.backButton
-        
             view.addSubview(tableView)
             view.addSubview(buttonFilter)
-        
            NSLayoutConstraint.activate([
                tableView.leftAnchor.constraint(equalTo: view.leftAnchor),
                tableView.rightAnchor.constraint(equalTo: view.rightAnchor),
