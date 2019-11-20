@@ -27,8 +27,6 @@ class TokopediaMiniProjectUITests: XCTestCase {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
-        self.testSearchVC(app)
-       
     }
 
     func testLaunchPerformance() {
@@ -39,25 +37,36 @@ class TokopediaMiniProjectUITests: XCTestCase {
             }
         }
     }
+}
+
+
+class UITEST : XCTestCase {
     
-    func testSearchVC(_ app : XCUIApplication){
+    func testSearchVC(){
+        let app = XCUIApplication()
+        app.launch()
         XCTAssertTrue(app.buttons[MockSearchVC.btnFilter].exists)
         XCTAssertTrue(app.staticTexts[MockSearchVC.searchTitle].exists)
         XCTAssertTrue(app.collectionViews[MockSearchVC.collectionSearchVC].exists)
-        app.buttons[MockSearchVC.btnFilter].tap()
-        self.testFilterVC(app)
     }
     
-    func testFilterVC(_ app : XCUIApplication){
+    func testFilterVC(){
+        let app = XCUIApplication()
+        app.launch()
+        app.buttons[MockSearchVC.btnFilter].tap()
         XCTAssertTrue(app.buttons[MockFilterVC.btnApply].exists)
         XCTAssertTrue(app.buttons[">"].exists)
         app.buttons[">"].tap()
-        self.testShopTypeVC(app)
     }
     
-    func testShopTypeVC(_ app : XCUIApplication){
+    func testShopTypeVC() {
+        let app = XCUIApplication()
+        app.launch()
+        app.buttons[MockSearchVC.btnFilter].tap()
+        app.buttons[">"].tap()
         XCTAssertTrue(app.buttons[MockShopTypeVC.btnApply].exists)
     }
+       
     
 }
 
