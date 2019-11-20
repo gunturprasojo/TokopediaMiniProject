@@ -29,7 +29,7 @@ class SearchVC: ViewController {
         return cv
     }()
     
-    lazy private var buttonFilter: UIButton = {
+    lazy var buttonFilter: UIButton = {
         [unowned self] in
         let btn = UIButton(frame: .zero)
         btn.setTitle("Filter", for: .normal)
@@ -40,7 +40,7 @@ class SearchVC: ViewController {
         return btn
     }()
     
-    lazy private var nextPageIndicator : UIActivityIndicatorView = {
+    lazy var nextPageIndicator : UIActivityIndicatorView = {
         [unowned self] in
         let act = UIActivityIndicatorView(style: UIActivityIndicatorView.Style.medium)
         act.color = .commonGreen

@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		194EE6AC5B03C92CB95BC161 /* Pods_TokopediaMiniProject.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */; };
+		733D370CE03B094B66B1B9D3 /* Pods_TokopediaMiniProjectTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5BEC58CDB79EE13DB0F723F7 /* Pods_TokopediaMiniProjectTests.framework */; };
 		B8015B69237B5B9500DB3264 /* FormatterExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8015B68237B5B9500DB3264 /* FormatterExtension.swift */; };
 		B8015B6B237B5BA300DB3264 /* IntExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8015B6A237B5BA300DB3264 /* IntExtension.swift */; };
 		B8015B6E237B5C4400DB3264 /* FormatterStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8015B6D237B5C4400DB3264 /* FormatterStyle.swift */; };
@@ -69,7 +70,10 @@
 /* Begin PBXFileReference section */
 		1BE3DB9C253256B9368F737D /* Pods-TokopediaMiniProject.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProject.release.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject.release.xcconfig"; sourceTree = "<group>"; };
 		1E93BD719248425146E3D491 /* Pods-TokopediaMiniProject.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProject.debug.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject.debug.xcconfig"; sourceTree = "<group>"; };
+		443958BDA1A1B86C5AEA0931 /* Pods-TokopediaMiniProjectTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProjectTests.debug.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProjectTests/Pods-TokopediaMiniProjectTests.debug.xcconfig"; sourceTree = "<group>"; };
 		476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokopediaMiniProject.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		56EF1290D6F89208F6E3EC9F /* Pods-TokopediaMiniProjectTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-TokopediaMiniProjectTests.release.xcconfig"; path = "Target Support Files/Pods-TokopediaMiniProjectTests/Pods-TokopediaMiniProjectTests.release.xcconfig"; sourceTree = "<group>"; };
+		5BEC58CDB79EE13DB0F723F7 /* Pods_TokopediaMiniProjectTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_TokopediaMiniProjectTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8015B68237B5B9500DB3264 /* FormatterExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterExtension.swift; sourceTree = "<group>"; };
 		B8015B6A237B5BA300DB3264 /* IntExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntExtension.swift; sourceTree = "<group>"; };
 		B8015B6D237B5C4400DB3264 /* FormatterStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterStyle.swift; sourceTree = "<group>"; };
@@ -130,6 +134,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				733D370CE03B094B66B1B9D3 /* Pods_TokopediaMiniProjectTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -148,6 +153,8 @@
 			children = (
 				1E93BD719248425146E3D491 /* Pods-TokopediaMiniProject.debug.xcconfig */,
 				1BE3DB9C253256B9368F737D /* Pods-TokopediaMiniProject.release.xcconfig */,
+				443958BDA1A1B86C5AEA0931 /* Pods-TokopediaMiniProjectTests.debug.xcconfig */,
+				56EF1290D6F89208F6E3EC9F /* Pods-TokopediaMiniProjectTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -156,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				476B3159ABF692234F600CE2 /* Pods_TokopediaMiniProject.framework */,
+				5BEC58CDB79EE13DB0F723F7 /* Pods_TokopediaMiniProjectTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -535,9 +543,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B89D720323746CB20011DA72 /* Build configuration list for PBXNativeTarget "TokopediaMiniProjectTests" */;
 			buildPhases = (
+				E61267338382115EC8C2DC41 /* [CP] Check Pods Manifest.lock */,
 				B89D71E823746CB20011DA72 /* Sources */,
 				B89D71E923746CB20011DA72 /* Frameworks */,
 				B89D71EA23746CB20011DA72 /* Resources */,
+				87C226A7B9BB95044E6D6B5F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -657,6 +667,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TokopediaMiniProject/Pods-TokopediaMiniProject-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		87C226A7B9BB95044E6D6B5F /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TokopediaMiniProjectTests/Pods-TokopediaMiniProjectTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-TokopediaMiniProjectTests/Pods-TokopediaMiniProjectTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-TokopediaMiniProjectTests/Pods-TokopediaMiniProjectTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 		9406FCED3FCF6FB9AF750C8F /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -673,6 +700,28 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-TokopediaMiniProject-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		E61267338382115EC8C2DC41 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-TokopediaMiniProjectTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -932,6 +981,7 @@
 		};
 		B89D720423746CB20011DA72 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 443958BDA1A1B86C5AEA0931 /* Pods-TokopediaMiniProjectTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -953,6 +1003,7 @@
 		};
 		B89D720523746CB20011DA72 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56EF1290D6F89208F6E3EC9F /* Pods-TokopediaMiniProjectTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";

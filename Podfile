@@ -12,3 +12,16 @@ target 'TokopediaMiniProject' do
   pod 'MultiSlider'
 
 end
+
+
+target 'TokopediaMiniProjectTests' do
+  # Comment the next line if you don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for RxExample
+  pod 'RxSwift'
+  pod 'RxCocoa'
+  pod 'RxDataSources', '~> 4.0.1'
+  pod 'MultiSlider'
+
+end
