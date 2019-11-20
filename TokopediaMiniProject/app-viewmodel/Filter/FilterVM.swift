@@ -42,6 +42,8 @@ class FilterVM: NSObject {
     
     let callbackPayload = BehaviorRelay<SearchViewModelData>(value: SearchViewModelData())
     
+    
+    
     func transform(input: Input) -> Output {
         let payloadModelTrigger = input.didSetPayloadTrigger.asDriver()
         let resetModelTrigger = input.resetPayloadTrigger.asDriver()

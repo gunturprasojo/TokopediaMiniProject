@@ -9,8 +9,6 @@
 import UIKit
 
 class FormatterStyle: NSObject {
-//    static let separatorNumberStyle = "."
-    
     static func separatorNumberStyle() -> String {
         if let path = Bundle.main.path(forResource: "APPConfiguration", ofType: "plist") {
                    let dictRoot = NSDictionary(contentsOfFile: path)
